@@ -1,0 +1,524 @@
+Queue is a logical datastructure. It works on discipline FIFO First in First Out.
+Queue have two ends front end and rear end.
+Insertion is done at rear end.
+Deletion is done at front end.
+
+Queue ADT
+Data
+1.space for storing element
+2.front for deletion
+3.rear for insertion
+
+Operation
+1.enqueue(x)
+2.dequeue()
+3.isEmpty()
+4.isFull()
+5.first()
+6.Last()
+
+Queue can be implemented using physical datastructure array and linkedlist
+
+Queue using Array
+
+Queue using single pointer
+Insert-o(1)
+Delete-o(n) #shifting drawback delete should also take o(1)
+
+Queue using two pointer
+Initially front=rear=-1
+Insertion Move rear and insert Time - o(1) 
+Deletion Move front and delete Time - o(1)
+
+isEmpty if(front==rear)
+isFull if(rear==size-1)
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Queue 
+{
+    int size;
+    int front;
+    int rear;
+    int *Q;
+};
+
+void Create(struct Queue *q,int size) 
+{
+    q->size=size;
+    q->front=q->rear=-1;
+    q->Q=(int *)malloc(q->size*sizeof(int));
+}
+
+void enqueue(struct Queue *q,int x)
+{
+    if(q->rear==q->size-1)
+    printf("Queue is full\n");
+    else 
+    {
+        q->rear++;
+        q->Q[q->rear]=x;
+    }
+}
+
+int dequeue(struct Queue *q) 
+{
+    int x=-1;
+    if(q->front==q->rear)
+    printf("queue is empty\n");
+    else 
+    {
+        q->front++;
+        x=q->Q[q->front];
+    }
+    return x;
+}
+
+void Display(struct Queue q)
+{
+    for(int i=q.front+1;i<=q.rear;i++)
+    printf("%d ",q.Q[i]);
+    printf("\n");
+}
+
+int main()
+{
+    struct Queue q;
+    Create(&q,5);
+     
+    enqueue(&q,10);enqueue(&q,20);enqueue(&q,30);
+    Display(q);
+    printf("%d ",dequeue(&q));
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+class Queue 
+{
+private:
+    int size;
+    int front;
+    int rear;
+    int *Q;
+public:
+    Queue(){front=rear=-1;size=10;Q=new int[size];}
+    Queue(int size){front=rear=-1,this->size=size;Q=new int[this->size];}
+    void enqueue(int x);
+    int dequeue();
+    void Display();
+};
+
+void Queue::enqueue(int x)
+{
+    if(rear==size-1)
+    cout<<"Queue full\n";
+    else 
+    {
+        rear++;
+        Q[rear]=x;
+    }
+}
+
+int Queue::dequeue() 
+{
+    int x=-1;
+    if(front==rear)
+    cout<<"Queue empty\n";
+    else
+    {
+        front++;
+        x=Q[front];
+    }
+    return x;    
+}
+
+void Queue::Display() 
+{
+    for(int i=front+1;i<=rear;i++)
+    cout<<Q[i]<<" ";
+    cout<<endl;
+}
+
+int main()
+{
+    Queue q(5);
+    
+    q.enqueue(10);q.enqueue(20);q.enqueue(30);
+    q.Display();
+    cout<<q.dequeue();
+    return 0;
+}
+
+Drawback of Queue using Array
+1.We cannot reuse the space of deleted elements.
+2.Every location can be used at once.
+3.A situation where queue is empty as well as full also.
+
+Solution
+1.Resetting pointers
+2.Circular Queue - Move front and rear circularly. We can use mod operation. rear=(rear+1)%size;
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Queue 
+{
+    int size;
+    int front;
+    int rear;
+    int *Q;
+};
+
+void Create(struct Queue *q,int size)
+{
+    q->size=size;
+    q->front=q->rear=0;
+    q->Q=(int *)malloc(q->size*sizeof(int));
+}
+
+void enqueue(struct Queue *q,int x)
+{
+    if((q->rear+1)%q->size==q->front)
+    printf("Queue is full\n");
+    else 
+    {
+        q->rear=(q->rear+1)%q->size;
+        q->Q[q->rear]=x;
+    }
+}
+
+int dequeue(struct Queue *q)
+{
+    int x=-1;      
+    if(q->front==q->rear)
+    printf("Queue is empty");
+    else 
+    {
+        q->front=(q->front+1)%q->size;
+        x=q->Q[q->front];
+    }
+    return x;
+}
+
+void Display(struct Queue q)
+{
+    int i=q.front+1;
+    
+    do 
+    {
+        printf("%d ",q.Q[i]);
+        i=(i+1)%q.size;
+    }while(i!=(q.rear+1)%q.size);
+    printf("\n");
+}
+
+int main()
+{
+    struct Queue q;
+    Create(&q,5);
+    
+    enqueue(&q,10);enqueue(&q,20);enqueue(&q,30);enqueue(&q,40);enqueue(&q,50);enqueue(&q,60);
+    printf("%d\n",dequeue(&q));
+    Display(q);
+
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node 
+{
+    int data;
+    struct Node *next;
+}*front=NULL,*rear=NULL;
+
+void enqueue(int x)
+{
+    struct Node *t=(struct Node *)malloc(sizeof(struct Node));
+    
+    if(t==NULL)
+    printf("Queue is full\n");
+    else 
+    {
+        t->data=x;
+        t->next=NULL;
+        if(front==NULL)
+            front=rear=t;
+        else
+        {
+            rear->next=t;
+            rear=t;
+        }
+    }
+}
+
+int dequeue()
+{
+    int x=-1;
+    struct Node *p=front;
+    if(front==NULL)
+    printf("Queue is empty");
+    else 
+    {
+        front=front->next;
+        x=p->data;
+        free(p);
+    }
+    return x;   
+}
+
+void Display()
+{
+    struct Node *p=front;
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+    printf("\n");
+}
+
+int main() 
+{
+    enqueue(10);enqueue(20);enqueue(30);enqueue(40);enqueue(50);
+    Display();
+    
+    printf("%d ",dequeue());
+}
+
+Double Ended Queue DEQueue
+It does not strictly follow FIFO. 
+
+In DEQueue use both pointer for both insertion and deletion operation.
+There are two types of DEQueue
+1.Input restricted Dequeue 
+         Insert  Delete
+front    no       yes 
+rear     yes      yes
+
+2.Output Restricted DEQueue
+         Insert   Delete
+front    yes      yes
+rear     yes      no
+
+#include <iostream>
+
+using namespace std;
+ 
+class DEQueue{
+private:
+    int front;
+    int rear;
+    int size;
+    int* Q;
+ 
+public:
+    DEQueue(int size);
+    ~DEQueue();
+    void display();
+    void enqueueFront(int x);
+    void enqueueRear(int x);
+    int dequeueFront();
+    int dequeueRear();
+    bool isEmpty();
+    bool isFull();
+};
+ 
+DEQueue::DEQueue(int size) 
+{
+    this->size = size;
+    front = -1;
+    rear = -1;
+    Q = new int [size];
+}
+ 
+DEQueue::~DEQueue() 
+{
+    delete [] Q;
+}
+ 
+bool DEQueue::isEmpty() 
+{
+    if (front == rear)
+    {
+        return true;
+    }
+    return false;
+}
+ 
+bool DEQueue::isFull() 
+{
+    if (rear == size - 1)
+    {
+        return true;
+    }
+    return false;
+}
+ 
+void DEQueue::enqueueFront(int x) 
+{
+    if (front == -1)
+    {
+        cout << "DEQueue Overflow" << endl;
+    } else 
+    {
+        Q[front] = x;
+        front--;
+    }
+}
+ 
+void DEQueue::enqueueRear(int x) 
+{
+    if (isFull())
+    {
+        cout << "DEQueue Overflow" << endl;
+    } else 
+    {
+        rear++;
+        Q[rear] = x;
+    }
+}
+ 
+int DEQueue::dequeueFront() 
+{
+    int x = -1;
+    if (isEmpty()){
+        cout << "DEQueue Underflow" << endl;
+    } else {
+        x = Q[front];
+        front++;
+    }
+    return x;
+}
+ 
+int DEQueue::dequeueRear() 
+{
+    int x = -1;
+    if (rear == -1)
+    {
+        cout << "DEQueue Underflow" << endl;
+    } else 
+    {
+        x = Q[rear];
+        rear--;
+    }
+    return x;
+}
+ 
+void DEQueue::display() 
+{
+    for (int i=front+1; i<=rear; i++) 
+    {
+        cout << Q[i] <<" ";
+    }
+    cout << endl;
+}
+ 
+int main() 
+{
+ 
+    int A[] = {1, 3, 5, 7, 9};
+    int B[] = {2, 4, 6, 8};
+ 
+    DEQueue deq(sizeof(A)/sizeof(A[0]));
+ 
+    for (int i=0; i<sizeof(A)/sizeof(A[0]); i++)
+    {
+        deq.enqueueRear(A[i]);
+    }
+    deq.display();
+    deq.enqueueRear(11);
+    cout<<endl;
+    for (int i=0; i<sizeof(A)/sizeof(A[0]); i++)
+    {
+        deq.dequeueFront();
+    }
+    deq.dequeueFront();
+    cout <<endl;
+ 
+    for (int i=0; i<sizeof(B)/sizeof(B[0]); i++){
+        deq.enqueueFront(B[i]);
+    }
+    deq.display();
+    cout<<endl;
+    deq.enqueueFront(10);
+    cout<<endl;
+    deq.enqueueFront(12);
+ 
+    for (int i=0; i<sizeof(B)/sizeof(B[0]); i++){
+        deq.dequeueRear();
+    }
+    deq.display();
+    deq.dequeueRear();
+    deq.dequeueRear();
+ 
+    return 0;
+}
+
+
+#include <iostream>
+#include <stack>
+
+using namespace std;
+ 
+class Queue{
+private:
+    stack<int> e_stk;
+    stack<int> d_stk;
+public:
+    Queue(){};
+    ~Queue(){};
+    void enqueue(int x);
+    int dequeue();
+};
+ 
+void Queue::enqueue(int x) 
+{
+    e_stk.push(x);
+}
+ 
+int Queue::dequeue() 
+{
+    int x = -1;
+    if (d_stk.empty()) //second stack is empty
+    {
+        if (e_stk.empty()) //first stack is empty
+        {
+            cout << "Queue Underflow" << endl;
+            return x;
+        } 
+        else              //first stack is not empty
+        {
+            while (!e_stk.empty())
+            {
+                d_stk.push(e_stk.top());
+                e_stk.pop();
+            }
+        }
+    }
+    x = d_stk.top();
+    d_stk.pop();
+    return x;
+}
+ 
+int main() 
+{
+    int A[] = {1, 3, 5, 7, 9};
+    Queue q;
+
+    cout << "Enqueue: " ;
+    for (int i=0; i<sizeof(A)/sizeof(A[0]); i++){
+        q.enqueue(A[i]);
+        cout << A[i] << " ";
+    }
+    cout << endl;
+ 
+    cout << "Dequeue: ";
+    for (int i=0; i<sizeof(A)/sizeof(A[0]); i++)
+        cout << q.dequeue() << " ";
+    return 0;
+}

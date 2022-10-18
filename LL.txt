@@ -1,0 +1,1936 @@
+Thr problem with the array is that array is of fixed size , later we cannot modify the size.
+
+We can create array either inside stack or inside heap
+int A[5]; //stack
+int *p=new int[5] //heap
+
+The benifit of array is that it has contiguous memory location.
+We can access the array with help of index.
+
+Linked List 
+It is a dynamic,flexible data structure. It is always created dynamically in heap.
+Linked list is a collection of node where each node contain data and pointer to next node. 
+All those nodes are not side by side.
+
+A node contains data and pointer to next Node.
+
+class Node
+{
+  public:
+    int data;         2
+    Node *next;       2
+};                   ___
+                      4 bytes
+Node *p = new Node;
+p->data=10;
+p->next=NULL;
+
+q=p; two pointers point on same node.
+q=p->next;  q point on next node
+p=p->next; p point next node
+
+if(p==NULL) p is not pointing on any node
+if(!p) pointer is NULL
+
+if(p!=NULL) p is pointing some node
+if(p)
+
+if(p->next==NULL) 
+if(p->next!=NULL)
+
+#include <iostream>
+using namespace std;
+
+class Node
+{
+    public:
+    int data;
+    Node *next;
+};
+
+class LL 
+{
+    private:
+    Node *head;
+    public:
+    LL()
+    {
+        head=NULL;
+    }
+    LL(int a[],int n);
+    
+    void Display();
+    int Length();
+    int Sum();
+    int Max();
+    bool Search(int key);
+    //bool Isearch(int key);
+    void Insert(int index,int key);
+    void SortedInsert(int key);
+};
+
+LL::LL(int a[],int n)
+{
+    Node *temp,*last;
+    
+    head=new Node;
+    head->data=a[0];
+    head->next=NULL;
+    last=head;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=new Node;
+        temp->data=a[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void LL::Display()
+{
+    Node *p=head;
+    
+    while(p)
+    {
+        cout<<p->data<<" ";
+        p=p->next;
+    }
+}
+
+int LL::Sum()
+{
+    Node *p=head;
+    int s=0;
+    
+    while(p)
+    {
+        s=s+p->data;
+        p=p->next;
+    }
+    return s;
+}
+
+int LL::Max()
+{
+    Node *p=head;
+    int m=-32768;
+    while(p)
+    {
+        if(m<p->data)
+        m=p->data;
+        p=p->next;
+    }
+    return m;
+}
+
+int LL::Length()
+{
+    Node *p=head;
+    int count=0;
+    
+    while(p)
+    {
+        count++;
+        p=p->next;
+    }
+    return count;
+}
+
+bool LL::Search(int key)
+{
+    Node *p=head;
+    while(p)
+    {
+        if(key==p->data)
+        return true;
+        
+        p=p->next; 
+    }
+    return false;
+}
+
+/*bool LL::Isearch(int key)
+{
+    Node *p=head,*q=NULL;
+    while(p)
+    {
+        if(key==p->data)
+        {
+            return key;
+            q->next=p->next;            
+            p->next=head;                      //searched element will move to head
+            head=p;
+        }
+        q=p;
+        p=p->next;
+    }
+}*/
+
+void LL::Insert(int index,int key)
+{
+    Node *p=head,*t;
+    
+    if(index<0 || index>5)
+    return;
+    
+    t=new Node;
+    t->data=key;
+    t->next=NULL;
+    
+    if(index==0)   //o(1)
+    {
+        t->next=head;
+        head=t;
+    }
+    else
+    {
+    for(int i=0;i<index-1;i++)  //O(n)
+        p=p->next;
+        
+        t->next=p->next;
+        p->next=t;
+    }
+}
+
+void LL::SortedInsert(int key)
+{
+    Node *p=head,*t,*q=NULL;
+        //min - o(1)  max - o(n)
+        
+        t=new Node;
+        t->data=key;
+        t->next=NULL;
+        
+        if(head==NULL)
+        head=t;
+        
+        while(p && key>p->data)
+        {
+            q=p;
+            p=p->next;
+        }
+        if(p==head)           // first node
+        {
+            t->next=head;
+            head=t;
+        }
+        else
+        {
+           t->next=q->next;
+           q->next=t; 
+        }
+}
+
+
+int main()
+{
+    int a[]={1,2,3,4,5};
+    LL l(a,5);
+    
+    l.Display();
+    cout<<endl;
+    cout<<l.Length()<<endl;
+    cout<<l.Sum()<<endl;
+    cout<<l.Max()<<endl;
+    cout<<l.Search(8)<<endl;
+    //cout<<l.Isearch(3)<<endl;
+    
+    l.Insert(2,10);
+    l.Display();
+    cout<<endl;
+    l.SortedInsert(40);
+    l.Display();
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+class Node
+{
+public:
+ int data;
+ Node *next;
+};
+class LinkedList
+{
+private:
+ Node *first;
+public:
+ LinkedList(){first=NULL;}
+ LinkedList(int A[],int n);
+ 
+ void Display();
+ int Delete(int index);
+ int Length();
+};
+LinkedList::LinkedList(int A[],int n)
+{
+ Node *last,*t;
+ int i=0;
+ 
+ first=new Node;
+ first->data=A[0];
+ first->next=NULL;
+ last=first;
+ 
+ for(i=1;i<n;i++)
+ {
+ t=new Node;
+ t->data=A[i];
+ t->next=NULL;
+ last->next=t;
+ last=t;
+ }
+}
+
+void LinkedList::Display()
+{
+ Node *p=first;
+ 
+ while(p)
+ {
+ cout<<p->data<<" ";
+ p=p->next;
+ }
+ cout<<endl;
+}
+
+int LinkedList::Length()
+{
+ Node *p=first;
+ int len=0;
+ 
+ while(p)
+ {
+ len++;
+ p=p->next;
+ }
+ return len;
+}
+
+int LinkedList::Delete(int index)
+{
+ Node *p,*q=NULL;
+ int x=-1;
+ 
+ if(index < 1 || index > Length())
+ return -1;
+ 
+ if(index==1)         //delete first node o(1)
+ {
+ p=first;
+ first=first->next;
+ x=p->data;
+ delete p;
+ }
+ 
+ else
+ {
+ p=first;
+ for(int i=0;i<index-1 && p;i++)    //delete any other position o(n)
+ {
+ q=p;
+ p=p->next;
+ }
+ q->next=p->next;
+ x=p->data;
+ delete p;
+ }
+ return x;
+}
+
+int main()
+{
+ int A[]={1,2,3,4,5};
+ LinkedList l(A,5);
+ 
+ cout<<"deleted element is "<<l.Delete(6)<<endl;
+ cout<<"deleted element is "<<l.Delete(2)<<endl;
+ l.Display();
+ 
+ return 0;
+}
+
+#include <iostream>
+using namespace std;
+class Node
+{
+public:
+ int data;
+ Node *next;
+};
+class LinkedList
+{
+private:
+ Node *first;
+public:
+ LinkedList(){first=NULL;}
+ LinkedList(int A[],int n);
+ 
+ void Display();
+ int Length();
+ bool checkSorted();
+ void RemoveDuplicate();
+ void Reverse1();
+ void Reverse2();
+};
+LinkedList::LinkedList(int A[],int n)
+{
+ Node *last,*t;
+ int i=0;
+ 
+ first=new Node;
+ first->data=A[0];
+ first->next=NULL;
+ last=first;
+ 
+ for(i=1;i<n;i++)
+ {
+ t=new Node;
+ t->data=A[i];
+ t->next=NULL;
+ last->next=t;
+ last=t;
+ }
+}
+
+void LinkedList::Display()
+{
+ Node *p=first;
+ 
+ while(p)
+ {
+ cout<<p->data<<" ";
+ p=p->next;
+ }
+ cout<<endl;
+}
+
+int LinkedList::Length()
+{
+ Node *p=first;
+ int len=0;
+ 
+ while(p)
+ {
+ len++;
+ p=p->next;
+ }
+ return len;
+}
+
+bool LinkedList::checkSorted()   //o(1) to o(n)
+{
+Node *p=first;
+int x=-32768;
+while(p)
+{
+if(p->data<x)
+return false;
+x=p->data;
+p=p->next;
+}
+return true;
+} 
+
+void LinkedList::RemoveDuplicate()
+{
+Node *p=first,*q=first->next;
+while(q)
+    {
+    if(p->data!=q->data)     //o(n)
+    {
+        p=q;
+        q=q->next;
+    }
+    else
+    {
+       p->next=q->next;
+       delete q; 
+       q=p->next;
+    }
+    }
+}
+
+void LinkedList::Reverse1()
+{
+    Node *p=first;
+ int A[5],i=0;
+  Node *q=p;
+
+ while(q!=NULL)
+ {
+ A[i]=q->data;
+ q=q->next;
+ i++;
+ }
+ q=p;
+ i--;
+ while(q!=NULL)
+ {
+ q->data=A[i];
+ q=q->next;
+ i--;
+ }
+}
+
+void LinkedList::Reverse2()
+{
+  Node *p=first,*q=NULL,*r=NULL;
+
+ while(p!=NULL)
+ {
+    r=q;
+    q=p;
+    p=p->next;
+    q->next=r;
+ }
+ first=q;
+}
+
+int main()
+{
+ int A[]={1,2,3,3,4,5,5};
+ LinkedList l(A,6);
+
+ l.Display();
+ cout<<l.checkSorted()<<endl;
+  
+ l.RemoveDuplicate();
+ l.Display();
+ l.Reverse1();
+ l.Display();
+ l.Reverse2();
+ l.Display();
+ return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+class Node 
+{
+    public:
+    int data;
+    Node *next;
+};
+
+Node *head = new Node;
+
+void Create(int a[],int n)
+{
+    Node *temp,*last;
+    
+    head->data=a[0];
+    head->next=NULL;
+    last=head;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=new Node;
+        temp->data=a[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+int checkLoop(Node *p)
+{
+    Node *q=p;
+    
+    do
+    {
+        p=p->next;
+        q=q->next;
+        q=q?q->next:q;
+    }while(p && q && p!=q);
+    if(p==q)
+    return 1;
+    else
+    return 0;
+}
+
+int main()
+{
+    Node *t1,*t2;
+    int a[]={1,2,3,4,5};
+    Create(a,5);
+    t1=head->next;
+    t2=head->next->next;
+    
+    t2->next=t1;
+    cout<<checkLoop(head);
+
+    return 0;
+}
+
+______________________________________________________________________________________________________________________________________________________________________
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node 
+{
+    int data;
+    struct Node *next;
+}*first=NULL;
+
+void Create(int A[],int n)
+{
+    struct Node *last,*temp;
+    
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+}
+
+void RDisplay(struct Node *p)
+{
+    if(p==NULL)
+    return ;
+    else
+    printf("%d ",p->data);
+    RDisplay(p->next);
+}
+
+void RDisplay2(struct Node *p)
+{
+    if(p!=NULL)
+    {
+        RDisplay2(p->next);
+    printf("%d ",p->data);
+    }
+}
+
+int Count(struct Node *p)
+{
+    int c=0;
+    while(p!=NULL)
+    {
+        c++;
+        p=p->next;
+    }
+    return c;
+}
+
+int RCount(struct Node *p)
+{
+    if(p==0)
+    return 0;
+    else
+    return 1+RCount(p->next);
+}
+
+int Sum(struct Node *p)
+{
+    int sum=0;
+    while(p)
+    {
+        sum=sum+p->data;
+        p=p->next;
+    }
+    return sum;
+}
+
+int RSum(struct Node *p)
+{
+    if(p==0)
+    return 0;
+    else
+    return RSum(p->next)+p->data;
+}
+
+int Max(struct Node *p)
+{
+    int max=-32768;
+    while(p)
+    {
+        if(p->data>max)
+        max=p->data;
+        
+        p=p->next;
+    }
+    return max;
+}
+
+int RMax(struct Node *p)
+{
+    int x=0;
+    if(p)
+    {
+        x=RMax(p->next);    
+        if(x<p->data)
+        x=p->data;
+    }
+    return x;
+}
+
+
+struct Node * LSearch(struct Node *p,int key)
+{
+    struct Node *q=NULL;
+    while(p)
+    {
+        if(key==p->data)
+        {
+            q->next=p->next;
+            p->next=first;
+            first=p;
+            return p;
+        }
+        
+        q=p;
+        p=p->next;
+    }
+    return NULL;
+}
+
+struct Node *RSearch(struct Node *p,int key)
+{
+    if(p==NULL)
+    return NULL;
+    if(key==p->data)
+    return p;
+    return RSearch(p->next,key);
+}
+
+int main()
+{
+    int A[]={8,3,7,12,9};
+    Create(A,5);
+    
+    Display(first);
+    RDisplay(first);
+    RDisplay2(first);
+    printf("\n%d",Count(first));
+    printf("\n%d",RCount(first));
+    printf("\n%d",Sum(first));
+    printf("\n%d",RSum(first));
+    printf("\n%d",Max(first));
+    printf("\n%d\n",RMax(first));
+    
+    struct Node *t1;
+    t1=LSearch(first,7);
+    t1=LSearch(first,9);
+    if(t1) printf("key found %d\n",t1->data);
+    else printf("key not found\n");
+    Display(first);
+    return 0;
+}
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node 
+{
+    int data;
+    struct Node *next;
+}*first=NULL;
+/**
+void Create(int A[],int n)
+{
+    struct Node *temp,*last;
+    
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}**/
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+}
+
+int Count(struct Node *p)
+{
+    int c=0;
+    while(p)
+    {
+        c++;
+        p=p->next;
+    }
+    return c;
+}
+
+void Insert(struct Node *p,int pos,int x)
+{
+    struct Node *t;
+    
+    if(pos<0 || pos>Count(p))
+    return ;
+    
+    t=(struct Node *)malloc(sizeof(struct Node));
+    t->data=x;
+    
+    if(pos==0)
+    {
+        t->next=first;
+        first=t;
+    }
+    else
+    {
+        for(int i=0;i<pos-1;i++)
+        p=p->next;
+        t->next=p->next;
+        p->next=t;
+    }
+}
+
+void InsertLast(int x)
+{
+    struct Node *last;
+    struct Node *t=(struct Node *)malloc(sizeof(struct Node));
+    t->data=x;
+    t->next=NULL;
+    
+    if(first==NULL)
+    {
+        first=last=t;
+    }
+    else
+    {
+        last->next=t;
+        last=t;
+    }
+}
+
+void SortedInsert(struct Node *p,int x)
+{
+    struct Node *t,*q=NULL;
+    
+    t=(struct Node *)malloc(sizeof(struct Node));
+    t->data=x;
+    t->next=NULL;
+    
+    if(first==NULL) //linked list is empty
+    first=t;
+    else
+    {
+        while(p && p->data<x)
+        {
+            q=p;
+            p=p->next;
+        }
+        if(p==first) //new element before first node
+        {
+            t->next=first;
+            first=t;
+        }
+        else
+        {
+            t->next=q->next;
+            q->next=t;
+        }
+    }
+}
+
+int Delete(struct Node *p,int pos)
+{
+    int x=-1;
+    struct Node *q;
+    if(pos<1 || pos>Count(p))
+    return -1;
+    
+    if(pos==1)  //delete first node
+    {
+        x=first->data;
+        first=first->next;
+        free(p);
+        return x;
+    }
+    else //delete at any position
+    {
+        for(int i=0;i<pos-1;i++)
+        {
+            q=p;
+            p=p->next;
+        }
+            q->next=p->next;
+            x=p->data;
+            free(p);
+            return x;
+    }
+}
+
+int isSorted(struct Node *p)
+{
+    int x=-32768;
+    while(p)
+    {
+        if(p->data<x) //p->data less than x
+        return 0;
+        x=p->data;
+        p=p->next;
+    }
+    return 1;
+}
+
+int main()
+{
+    Insert(first,0,10);
+    Insert(first,1,20);
+    Insert(first,2,30);
+    //Insert(first,0,1);
+    InsertLast(40);
+    InsertLast(50);
+    InsertLast(60);
+    
+    SortedInsert(first,5);
+    SortedInsert(first,75);
+    SortedInsert(first,25);
+    
+    printf("Deleted element: %d\n",Delete(first,3));
+    Display(first);
+    
+    if(isSorted(first))
+    printf("\nSorted");
+    else
+    printf("\nNot Sorted");
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Node 
+{
+    int data;
+    struct Node *next;
+}*first=NULL;
+
+void Create(int A[],int n)
+{
+    struct Node *temp,*last;
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+}
+
+void RemoveDuplicates(struct Node *p)
+{
+    struct Node *q=p->next;
+    while(q)
+    {
+        if(p->data!=q->data)
+        {
+            p=q;
+            q=q->next;
+        }
+        else
+        {
+            p->next=q->next;
+            free(q);
+            q=p->next;
+        }
+    }
+}
+
+int main()
+{
+    int A[]={1,1,1,2,2,2,3,3,4,4};
+    Create(A,10);
+    RemoveDuplicates(first);
+    Display(first);
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Node 
+{
+    int data;
+    struct Node *next;
+}*first=NULL;
+
+void Create(int A[],int n)
+{
+    struct Node *temp,*last;
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+}
+
+int Count(struct Node *p)
+{
+    int c=0;
+    while(p)
+    {
+        c++;
+        p=p->next;
+    }
+    return c;
+}
+
+void Reverse1(struct Node *p)
+{
+    int *A,i=0;
+    struct Node *q=p;
+    A=(int *)malloc(sizeof(int)*Count(p));
+    
+    while(q)
+    {
+        A[i]=q->data;
+        i++;
+        q=q->next;
+    }
+    q=p;
+    i--;
+    while(q)
+    {
+        q->data=A[i];
+        q=q->next;
+        i--;
+    }
+}
+
+void Reverse2(struct Node *p)
+{
+    struct Node *q=NULL,*r=NULL;
+    while(p)
+    {
+        r=q;
+        q=p;
+        p=p->next;
+        q->next=r;
+    }
+    first=q;
+}
+
+void RDisplay(struct Node *p)
+{
+    if(p)
+    {
+        RDisplay(p->next);
+        printf("%d ",p->data);
+    }
+    else 
+    return ;
+}
+
+void Reverse3(struct Node *q,struct Node *p)
+{
+    if(p)
+    {
+        Reverse3(p,p->next);
+        p->next=q;
+    }
+    else
+    first=q;
+}
+
+int main()
+{
+    int A[]={1,2,3,4,5};
+    Create(A,5);
+    Reverse3(NULL,first);
+    Display(first);
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Node
+{
+    int data;
+    struct Node *next;
+}*first=NULL,*second=NULL,*third=NULL;
+
+void Create(int A[],int n)
+{
+    struct Node *last,*temp;
+    
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Create2(int A[],int n)
+{
+    struct Node *last,*temp;
+    
+    second=(struct Node *)malloc(sizeof(struct Node));
+    second->data=A[0];
+    second->next=NULL;
+    last=second;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+}
+
+void Concat(struct Node *first,struct Node *second)
+{
+    third=first;
+    
+    while(first->next!=NULL)
+        {
+            first=first->next;
+        }
+        first->next=second;
+}
+
+
+void Merge(struct Node *first,struct Node *second)
+{
+    struct Node *last;
+if(first->data<second->data)
+{
+    third=last=first;
+    first=first->next;
+    last->next=NULL;
+}
+else
+{
+    third=last=second;
+    second=second->next;
+    last->next=NULL;
+}
+
+while(first && second)               //repeating
+{
+if(first->data<second->data)
+{
+    last->next=first;
+    last=first;
+    first=first->next;
+    last->next=NULL;
+}
+else
+{
+    last->next=second;
+    last=second;
+    second=second->next;
+    last->next=NULL;
+}
+}
+
+if(first) last->next=first;
+if(second) last->next=second;
+}
+
+int main()
+{
+    int A[]={10,20,30,40,50};
+    int B[]={5,15,25,35,45};
+    Create(A,5);
+    Create2(B,5);
+    Display(first);printf("\n");
+    Display(second);printf("\n");
+    Merge(first,second);
+    Display(third);
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *next;
+}*first=NULL,*second=NULL,*third=NULL;
+
+void Create(int A[],int n)
+{
+    struct Node *last,*temp;
+    
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }
+}
+
+int isLoop(struct Node *f)
+{
+    struct Node *p,*q;
+    p=q=f;
+    
+    do
+    {
+        p=p->next;
+        q=q->next;
+        q=q?q->next:q;
+    }while(p && q && p!=q);
+    if(p==q) return 1;
+    else return 0;
+}
+
+int main()
+{
+    struct Node *t1,*t2;
+    int A[]={10,20,30,40,50};
+    Create(A,5);
+    
+    t1=first->next->next;
+    t2=first->next->next->next->next;
+    t2->next=t1;
+    
+    printf("%d\n",isLoop(first));
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+class Node
+{
+    public:
+    int data;
+    Node *next;
+};
+
+class LinkedList
+{
+    private:
+    Node *first;
+    public:
+    LinkedList(){first=NULL;}
+    LinkedList(int A[],int n);
+    ~LinkedList();
+    
+    void Display();
+    void Insert(int pos,int x);
+    int Delete(int pos);
+    int Length();
+};
+
+LinkedList::LinkedList(int A[],int n)
+{
+    Node *last,*temp;
+    
+    first=new Node;
+    first->data=A[0];
+    first->next=NULL;
+    last=first;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=new Node;
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+LinkedList::~LinkedList()
+{
+    Node *p=first;
+    while(first)
+    {
+        first=first->next;
+        delete p;
+        p=first;
+    }
+}
+
+void LinkedList::Display()
+{
+    Node *p=first;
+    while(p)
+    {
+        cout<<p->data<<" ";
+        p=p->next;
+    }
+}
+
+int LinkedList::Length()
+{
+    Node *p=first;
+    int c=0;
+    while(p)
+    {
+        c++;
+        p=p->next;
+    }
+    return c;
+}
+
+void LinkedList::Insert(int pos,int x)
+{
+    Node *t,*p=first;
+    
+    if(pos<0 || pos>Length())
+    return;
+    
+    t=new Node;
+    t->data=x;
+    t->next=NULL;
+    
+    if(pos==0)
+    {
+        t->next=first;
+        first=t;
+    }
+    else
+    {
+        for(int i=0;i<pos-1;i++)
+        p=p->next;
+        t->next=p->next;
+        p->next=t;
+    }
+}
+
+int LinkedList::Delete(int pos)
+{
+ Node *p=first,*q=NULL;
+ int x=-1;
+ 
+ if(pos < 1 || pos > Length())
+ return -1;
+ 
+ if(pos==1)
+ {
+    first=first->next;
+    x=p->data;
+    delete p;
+ }
+ else
+ {
+    for(int i=0;i<pos-1;i++)
+    {
+        q=p;
+        p=p->next;
+    }
+    q->next=p->next;
+    x=p->data;
+    delete p;
+ }
+ return x;
+}
+
+int main()
+{
+    int A[]={1,2,3,4,5};
+    LinkedList l(A,5);
+    l.Insert(0,10);
+    l.Delete(1);
+    cout<<l.Length()<<endl;
+    l.Display();
+    return 0;
+}
+
+In a circular linked list the nodes are circularly connected.We can traverse the nodes circularly,eg contact list
+A circular linked list cannot be null,if it is empty it should be circular.  
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+   int data;
+   struct Node *next;
+}*Head;
+
+void create(int A[],int n)
+{
+   struct Node *t,*last;
+   Head=(struct Node*)malloc(sizeof(struct Node));
+   Head->data=A[0];
+   Head->next=Head;
+   last=Head;
+ 
+   for(int i=1;i<n;i++)
+   {
+   t=(struct Node*)malloc(sizeof(struct Node));
+   t->data=A[i];
+   t->next=last->next;
+   last->next=t;
+   last=t;
+   }
+}
+
+void Display(struct Node *p)
+{
+   do
+  {
+    printf("%d ",p->data);
+    p=p->next;
+  }while(p!=Head);
+}
+
+void RDisplay(struct Node *p)
+{
+   static int flag=0;
+   if(p!=Head || flag==0)
+   {
+        flag=1;
+        printf("%d ",p->data);
+        RDisplay(p->next);
+ }
+ flag=0;
+}
+
+int Length(struct Node *p)
+{
+    int len=0;
+    do
+    {
+        len++;
+        p=p->next;
+    }while(p!=Head);
+ return len;
+}
+
+void Insert(struct Node *p,int pos, int x)
+{
+    struct Node *t;
+    int i;
+    if(pos<0 || pos > Length(p))
+    return;
+    
+    t=(struct Node *)malloc(sizeof(struct Node));
+    t->data=x;
+    if(pos==0)
+    {
+        if(Head==NULL)
+        {
+            Head=t;
+            Head->next=Head;
+        }
+        else
+        {
+        while(p->next!=Head)p=p->next;
+        p->next=t;
+        t->next=Head;
+        Head=t;
+        }
+    }
+   else
+    {
+        for(i=0;i<pos-1;i++)p=p->next;
+    
+        t->next=p->next;
+        p->next=t;
+    }
+}
+
+int Delete(struct Node *p,int pos)
+{
+    int x;
+    struct Node *q;
+    if(pos<0 || pos>Length(Head))
+    return -1;
+    
+    if(pos==1)
+    {
+        while(p->next!=Head) p=p->next;
+        x=Head->data;
+        if(Head==p)
+        {
+            free(Head);
+            Head=NULL;
+        }
+        else
+        {
+            p->next=Head->next;
+            free(Head);
+            Head=p->next;
+        }
+    }
+    else
+    {
+        for(int i=0;i<pos-2;i++)
+        p=p->next;
+        
+        q=p->next;
+        p->next=q->next;
+        x=q->data;
+        free(q);
+    }
+    return x;
+}
+
+int main()
+{
+   int A[]={2,3,4,5,6};
+   create(A,5);
+   Insert(Head,0,10);
+   
+   printf("Deleted element: %d\n",Delete(Head,1));
+   RDisplay(Head);
+   return 0;
+}
+
+In a Doubly Linked List a node is having pointer to next node as well as previous node.(bidirectional) 
+eg contact list (up and down)
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    struct Node *prev;
+    int data;
+    struct Node *next;
+}*first=NULL;
+
+void Create(int A[],int n)
+{
+    struct Node *temp,*last;
+    
+    first=(struct Node *)malloc(sizeof(struct Node));
+    first->data=A[0];
+    first->next=first->prev=NULL;
+    last=first;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=(struct Node *)malloc(sizeof(struct Node));
+        temp->data=A[i];
+        temp->next=last->next;
+        temp->prev=last;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Display(struct Node *p)
+{
+    while(p)
+    {
+        printf("%d ",p->data);
+        p=p->next;
+    }    
+}
+
+int Length(struct Node *p)
+{
+    int c=0;
+    while(p)
+    {
+        c++;
+        p=p->next;
+    }
+    return c;
+}
+
+void Insert(struct Node * p,int pos,int x)
+{
+    struct Node *temp;
+    
+    if(pos<0 || pos>Length(p))
+    return;
+    
+    temp=(struct Node *)malloc(sizeof(struct Node));
+    temp->data=x;
+    
+    if(pos==0)
+    {
+        temp->prev=NULL;
+        temp->next=first;
+        first->prev=temp;
+        first=temp;
+    }
+    else
+    {
+        for(int i=0;i<pos-1;i++)
+        p=p->next;
+    
+        temp->prev=p;
+        temp->next=p->next;
+        if(p->next) p->next->prev=temp;
+        p->next=temp;
+    }
+}
+
+int Delete(struct Node *p,int pos)
+{
+    int x=-1;
+    if(pos<1 || pos>Length(p))
+    return -1;
+    
+    if(pos==1)
+    { 
+        first=first->next;
+        if(first) first->prev=NULL;
+
+        x=p->data;
+        free(p);
+    }
+    else
+    {
+        for(int i=0;i<pos-1;i++)
+        p=p->next;
+        
+        p->prev->next=p->next;
+        if(p->next) p->next->prev=p->prev;
+        
+        x=p->data;
+        free(p);
+    }
+    return x;
+}
+  
+void Reverse(struct Node *p)
+{
+    struct Node *temp;
+    while(p)
+    {
+        temp=p->next;
+        p->next=p->prev;
+        p->prev=temp;
+        p=p->prev;
+        if(p!=NULL && p->next==NULL) first=p;
+    }
+}
+
+int main()
+{
+    int A[]={1,2,3,4,5};
+    Create(A,5);
+    Insert(first,0,25);
+    printf("Deleted element: %d\n",Delete(first,1));
+    printf("%d\n",Length(first));
+    Reverse(first);
+    Display(first);
+    return 0;
+}
+
+In a circular doubly linked list the nodes are circularly connected.
+Comparsion of Linked List
+
+                        Space         Traverse                             Insert                           Delete
+                                                                 Before head       at any position      head   at any position
+Linear singly             n           forward                        o(1) 1 link      o(1) o(n)         o(1)     o(1)-o(n)
+Circular Singly           n       forward + circular                 o(n) 2 link        "               o(n)         " 
+Linear Doubly             2n       either direction                  o(1) 3 link        "               o(1)         "
+Circular Doubly           2n       either direction + circular       o(1) 4 link        "               o(1)         " 
+
+Comparison of array and linked list
+array - created in stack as well as hear
+linked list - created in heap
+
+array - fixed size
+linked list - variable size
+
+linked list take extra space reqired for pointer.
+
+array can be accessed randomly using index
+linked list can be accessed sequentially
+
+array 
+stack direct access
+heap indirect access
+linked list indirect access
+
+Insert + Delete
+array o(1) right
+      o(n) left (shifting take time)
+
+linked list o(1) left
+            o(n) right (traverse take time)
+
+Search
+Array 
+Linear search o(n)
+Binary search  o(logn)
+
+Linked List
+Linear Search o(n)
+Binary search o(nlogn) inefficient
+
+Linked list - insertion sort or merge sort	
+
+#include <iostream>
+#include <math.h>
+#include <stack>
+using namespace std;
+
+class Node
+{
+    public:
+    int data;
+    Node *next;
+};
+
+Node *head=new Node;
+
+void Create(int A[],int n)
+{
+    Node *temp,*last;
+    
+    head->data=A[0];
+    head->next=NULL;
+    last=head;
+    
+    for(int i=1;i<n;i++)
+    {
+        temp=new Node;
+        temp->data=A[i];
+        temp->next=NULL;
+        last->next=temp;
+        last=temp;
+    }
+}
+
+void Middle(Node *p)
+{
+    Node *q=p;
+    while(q)
+    {
+        q=q->next;
+        if(q) q=q->next;
+        if(q) p=p->next;
+    }
+    cout<<p->data;
+}
+
+void Middle2(Node *p)
+{
+    int length=0;
+    while(p)
+    {
+        length++;
+        p=p->next;
+    }
+    //cout<<length<<endl;
+    int index=(int)ceil(length/2.0);
+    //cout<<index<<endl;
+    Node *q=head;
+    for(int i=0;i<index-1;i++)
+        q=q->next;
+        
+        cout<<q->data;
+}
+
+void Middle3(Node *p)
+{
+    stack<Node*> s;
+    while(p)
+    {
+        s.push(p);
+        p=p->next;
+    }
+    int length=s.size();
+    //cout<<length<<endl;
+    int popLength=(int)(floor(length/2.0));
+    //cout<<popLength<<endl;
+    while(popLength)
+    {
+        s.pop();
+        //cout<<s.top()->data<<" ";
+        popLength--;
+    }
+    cout<<s.top()->data;
+}
+
+int main()
+{
+    int A[]={1,2,3,4,5,6,7};
+    Create(A,sizeof(A)/sizeof(A[0]));
+
+    Middle3(head);
+    return 0;
+}
+ 
+#include <iostream>
+#include <stack>
+
+using namespace std;
+ 
+class Node{
+public:
+    int data;
+    Node* next;
+};
+ 
+Node* head = new Node;
+Node* second = new Node;
+ 
+void create(int A[], int n){
+    Node* temp;
+    Node* tail;
+ 
+    head->data = A[0];
+    head->next = nullptr;
+    tail = head;
+ 
+    for (int i=1; i<n; i++){
+        temp = new Node;
+        temp->data = A[i];
+        temp->next = nullptr;
+        tail->next = temp;
+        tail = temp;
+    }
+}
+ 
+void createSecond(int A[], int n, Node* p){
+    Node* temp;
+    Node* tail;
+ 
+    second->data = A[0];
+    second->next = nullptr;
+    tail = second;
+ 
+    for (int i=1; i<n; i++){
+        temp = new Node;
+        temp->data = A[i];
+        temp->next = nullptr;
+        tail->next = temp;
+        tail = temp;
+    }
+    tail->next = p;
+}
+ 
+void Intersection(Node* p, Node* q){
+    // Populate first stack
+    stack<Node*> stk1;
+    while (p != nullptr){
+        stk1.push(p);
+        p = p->next;
+    }
+ 
+    // Populate second stack
+    stack<Node*> stk2;
+    while (q != nullptr){
+        stk2.push(q);
+        q = q->next;
+    }
+ 
+    Node* r;
+    while (stk1.top() == stk2.top()){
+        r = stk1.top();
+        stk1.pop();
+        stk2.pop();
+    }
+    cout << "Intersecting Node: " << r->data << endl;
+}
+ 
+ 
+int main() {
+ 
+    // Create First Linked List
+    int A[] = {1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21};
+    create(A, sizeof(A)/sizeof(A[0]));
+ 
+    // Create Second Linked List
+    Node* temp = head;
+    int i = 5;
+    while (i>0){
+        temp = temp->next;
+        i--;
+    }
+    cout << temp->data << endl;
+ 
+    int B[] = {2, 4, 6, 8, 10};
+    createSecond(B, sizeof(B)/sizeof(B[0]), temp);
+ 
+    // Find Intersection
+    Intersection(head, second);
+    return 0;
+}

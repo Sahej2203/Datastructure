@@ -1,0 +1,1061 @@
+A tree is a collection of nodes,vertices and edges where one of the node is taken as root node and rest of the node are divided into disjoint subsets 
+and each subset is a tree or a subtree.
+If there are n nodes there are (n-1) edges (except root)
+Terminology
+1.Root - The very first node on top is root node.
+2.Parent and Child - A node is a parent to its very next descendant or those descendants which are connected with just one node.
+3.Sibling - Children of same parents.
+4.Descendants - All those nodes which can be reached from a particular node.
+5.Ancestor - For any node all the node along the path from that node to root node. 
+6.Degree of Node - Number of direct children it is having.
+7.Internal Node,NonLeafnode,Nonterminal node - Node with degree more than 0.
+  External node ,Leaf Node,Terminal Node - Node with degree 0.
+8.Levels - We take paths by taking number of nodes. Start from 1
+9.Height - We take edges. Start from 0
+10.Forest - Collection of trees
+
+Binary Tree - A tree of degree 2 not more than degree 2. 
+Every node can have either zero children or one child or atmost 2 children.
+_________________________________________________________________________________________________________________________
+Unlabelled Nodes:
+Number of Binary Trees
+
+Given nodes = 3 
+number of trees = 5
+
+Given nodes = 4 
+number of trees = 14
+
+Given nodes = 5
+number of trees = 
+
+Catalan number
+2nCn/n+1
+2*5C5/6 = 10C5/6 = 10*9*8*7*6/5*4*3*2*1/6 = 42
+
+nodes = 3
+no of trees with maximum height = 2^2 = 4
+
+nodes = 4
+no of trees with maximum height = 2^3 = 8
+
+nodes = 5
+no of trees with maximum height = 2^4 = 16
+
+nodes = n
+no of trees with maximum height = 2^n-1 
+
+n           0   1   2  3  4    5   6
+2nCn/n+1    1   1   2  5  14   42
+
+T(6) = 1 x 42 + 1 x 14 + 2 x 5 + 5 x 2 + 14 x 1 + 42 x 1 = 132
+T(6) =T(0)*T(5)+T(1)*T(4)+T(2)*T(3)+T(3)*T(2)+T(4)*T(1)+T(5)*T(0)
+
+T(n)=  i=1 to n T(i-1)*T(n-i)
+
+
+T(6) = 2*6C6/7 = 12C6/7 = 12*11*10*9*8*7/6*5*4*3*2*1/7 = 132
+
+Labelled Nodes:
+T(n) = 2nCn/n+1 * n! 
+       Shape     Filling of labels
+______________________________________________________________________________________________________________________________
+Heights Vs Nodes in Binary Tree
+
+If height is given
+height = 1
+Min nodes = 2
+Max nodes = 3
+
+height = 2
+min nodes = 3
+max nodes = 7
+
+height = 3
+min nodes = 4 
+max nodes = 15  1 + 2 + 2^2 + 2^3
+
+min nodes n = h+1
+1 + 2 + 2^2 + 2^3
+
+a + ar + ar^2  + ... +ar^k = a(r^k+1 - 1)/r-1
+
+1 + 2 + 2^2 + 2^3 +   2^h = 1(2^h+1 - 1)2-1
+
+max nodes n = 2^h+1 - 1
+
+If nodes are given
+number of nodes = 3
+min height = 1
+max height = 2
+
+number of nodes = 7 
+min height = 2 
+max height = 6
+
+number of nodes = 15 
+min height = 3
+max height = 14
+
+max height h = n-1
+min height h = log2(n+1) - 1
+
+Number of nodes in a binary tree 
+h+1 <= n <= 2^h+1 - 1
+
+Height of binary tree 
+log2(n+1)-1 <= h <= n-1
+o(logn)             o(n)
+_________________________________________________________________________________________________________________________
+Internal node vs external node
+
+deg(0) = deg (2) + 1    #binary tree
+external  internal
+__________________________________________________________________________________________________________________________
+Strict Binary Tree
+A node can have 0 children or exactly 2 children cannot have 1 child.
+__________________________________________________________________________________________________________________________
+Height Vs Node in Strict Binary Tree
+
+If height (h) is given 
+min nodes n = 2h+1
+max nodes n = 2^h+1 - 1
+
+If n nodes are given
+min height h = log2(n+1)-1
+max height h = n-1/2
+__________________________________________________________________________________________________________________________
+Internal Node vs External Node in strict binary tree 
+e=i+1
+_________________________________________________________________________________________________________________________
+Full vs Complete Binary Tree
+Full binary tree - A binary tree of height h having maximum number of nodes
+
+Complete Binary tree - A binary tree is represented in array there should not be blank spaces in between the elements.
+A complete binary tree of height h will be a full binary tree upto h-1 height and the last level the element will be filled
+from left to right without skipping the element.
+
+Full Binary Tree is always complete binary tree but a complete binary tree need not be a Full Binary Tree.
+_________________________________________________________________________________________________________________________
+Tree Traversal
+
+Preorder - visit(node), Preorder(left subtree), Preorder(right subtree)
+
+Inorder - Inorder(left), visit(node), Inorder(right)
+
+Postorder - Postorder(left), Postorder(right), visit(node)
+
+Level order - Level by Level
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Stack 
+{
+    int size;
+    int top;
+    struct Node **S;
+};
+
+void Stackcreate(struct Stack *st,int size)
+{
+    st->size=size;
+    st->top=-1;
+    st->S=(struct Node **)malloc(st->size*sizeof(struct Node *));
+}
+
+void push(struct Stack *st,struct Node *x)
+{
+    if(st->top==st->size-1)
+    printf("Stack is full\n");
+    else 
+    {
+        st->top++;
+        st->S[st->top]=x;
+    }
+}
+
+struct Node * pop(struct Stack *st)
+{
+    struct Node *x=NULL;
+    if(st->top==-1)
+    printf("Stack is empty\n");
+    else 
+    {
+        x=st->S[st->top];
+        st->top--;
+    }
+    return x;
+}
+
+int isEmptyStack(struct Stack st)
+{
+    if(st.top==-1) return 1;
+    else return 0;
+}
+
+int isFullStack(struct Stack st)
+{
+    if(st.top==st.size-1) return 1;
+    else return 0;
+}
+
+struct Node 
+{
+    struct Node *lchild;
+    int data;
+    struct Node *rchild;
+};
+
+struct Queue 
+{
+    int front;
+    int rear;
+    int size;
+    struct Node **Q;
+};
+
+void create(struct Queue *q,int size)
+{
+    q->size=size;
+    q->front=q->rear=0;
+    q->Q=(struct Node **)malloc(q->size*sizeof(struct Node *));
+}
+
+void enqueue(struct Queue *q,struct Node * x)
+{
+    if((q->rear+1)%q->size==q->front)
+    printf("Queue is full\n");
+    else 
+    {
+        q->rear=(q->rear+1)%q->size;
+        q->Q[q->rear]=x;
+    }
+}
+
+struct Node * dequeue(struct Queue *q)
+{
+    struct Node *x=NULL;
+    if(q->front==q->rear)
+    printf("Queue is empty\n");
+    else 
+    {
+        q->front=(q->front+1)%q->size;
+        x=q->Q[q->front];
+    }
+    return x;
+}
+
+int isEmpty(struct Queue q)
+{
+    if(q.front==q.rear)
+    return 1;
+    else 
+    return 0;
+}
+
+struct Node *root=NULL;
+
+void Treecreate()
+{
+    struct Node *p,*t;
+    int x;
+    struct Queue q;
+    create(&q,100);
+    
+    printf("Enter root value: ");
+    scanf("%d",&x);
+    root=(struct Node *)malloc(sizeof(struct Node));
+    root->data=x;
+    root->lchild=root->rchild=NULL;
+    enqueue(&q,root);
+    
+    while(!isEmpty(q))
+    {
+        p=dequeue(&q);
+        printf("Enter left child of %d ",p->data);
+        scanf("%d",&x);
+        if(x!=-1)
+        {
+            t=(struct Node *)malloc(sizeof(struct Node));
+            t->data=x;
+            t->lchild=t->rchild=NULL;
+            p->lchild=t;
+            enqueue(&q,t);
+        }
+        printf("Enter right child of %d ",p->data);
+        scanf("%d",&x);
+        if(x!=-1)
+        {
+            t=(struct Node *)malloc(sizeof(struct Node));
+            t->data=x;
+            t->lchild=t->rchild=NULL;
+            p->rchild=t;
+            enqueue(&q,t);
+        }
+    }
+}
+
+void Preorder(struct Node *p)
+{
+    if(p)
+    {
+        printf("%d ",p->data);
+        Preorder(p->lchild);
+        Preorder(p->rchild);
+    }
+}
+
+void Inorder(struct Node *p)
+{
+    if(p)
+    {
+        Inorder(p->lchild);
+        printf("%d ",p->data);
+        Inorder(p->rchild);
+    }
+}
+
+void Postorder(struct Node *p)
+{
+    if(p)
+    {
+        Postorder(p->lchild);
+        Postorder(p->rchild);
+        printf("%d ",p->data);
+    }
+}
+
+void IPreorder(struct Node *p)
+{
+    struct Stack stk;
+    Stackcreate(&stk,100);
+    
+    while(p || !isEmptyStack(stk))
+    {
+        if(p)
+        {
+            printf("%d ",p->data);
+            push(&stk,p);
+            p=p->lchild;
+        }
+        else
+        {
+            p=pop(&stk);
+            p=p->rchild;
+        }
+    }
+}
+
+void IInorder(struct Node *p)
+{
+    struct Stack stk;
+    Stackcreate(&stk,100);
+    
+    while(p || !isEmptyStack(stk))
+    {
+        if(p)
+        {
+            push(&stk,p);
+            p=p->lchild;
+        }
+        else 
+        {
+            p=pop(&stk);
+            printf("%d ",p->data);
+            p=p->rchild;
+        }
+    }
+}
+
+void LevelOrder(struct Node *root)
+{
+    struct Queue q;
+    create(&q,100);
+    
+    printf("%d ",root->data);
+    enqueue(&q,root);
+    while(!isEmpty(q))
+    {
+        root=dequeue(&q);
+        if(root->lchild)
+        {
+            printf("%d ",root->lchild->data);
+            enqueue(&q,root->lchild);
+        }
+        if(root->rchild)
+        {
+            printf("%d ",root->rchild->data);
+            enqueue(&q,root->rchild);
+        }
+    }
+}
+
+int Count(struct Node *root)
+{
+    if(root) 
+    {
+        return Count(root->lchild)+Count(root->rchild)+1;
+    }
+    return 0;
+}
+
+int Height(struct Node *root)  //o(n)
+{
+    int x=0,y=0;
+    if(root==0)
+    return 0;
+    x=Height(root->lchild);
+    y=Height(root->rchild);
+    if(x>y) return x+1;
+    else return y+1;
+}
+
+int max(int a,int b)
+{
+	a>b?a:b;		
+}
+
+int Diameter(struct Node *root)   //o(n^2)
+{
+    int dia=0;
+    if(root==NULL) return 0;
+    
+    int dl = Diameter(root->lchild);
+    int dr = Diameter(root->rchild);
+    int cur = Height(root->lchild)+Height(root->rchild)+1;
+
+    return max(cur,max(dl,dr));
+}
+
+int main()
+{
+    Treecreate();
+    LevelOrder(root);
+    printf("Count: %d\n",Count(root));
+    printf("Height: %d\n",Height(root));
+    printf("Diameter: %d\n",Diameter(root));
+    return 0;
+}
+
+Can we ge generate tree for traversal?
+If only preorder is given we cannot generate tree, 2nCn/n+1 trees are possible, same with inorder and postorder.
+If we are given with preorder and postorder more than trees are possible.
+Preorder + Inorder, inorder can help decide spliting of node in right subtree and left subtree.
+Postorder + Inorder
+
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+class Node 
+{
+public:
+    Node *lchild;
+    int data;
+    Node *rchild;
+};
+
+class Queue 
+{
+private:
+    int front;
+    int rear;
+    int size;
+    Node **Q;
+public:
+    Queue(){front=rear=-1;size=10;Q=new Node*[size];}
+    Queue(int size){front=rear=-1;this->size=size;Q=new Node*[this->size];}
+    void enqueue(Node* x);
+    Node* dequeue();
+    int isEmpty(){return front==rear;}
+    void Display();
+};
+
+void Queue::enqueue(Node* x)
+{
+    if(rear==size-1)
+    printf("Queue is full");
+    else 
+    {
+        rear++;
+        Q[rear]=x;
+    }
+}
+
+Node* Queue::dequeue()
+{
+    Node *x=NULL;
+    if(front==rear)
+    printf("Queue is empty");
+    else
+    {
+        front++;
+        x=Q[front];
+    }
+    return x;
+}
+
+class Tree
+{
+    Node *root;
+public:
+    Tree(){root=NULL;}
+    void CreateTree();
+    void Preorder(){Preorder(root);} //overloaded function
+    void Preorder(Node *p);
+    void Inorder(){Inorder(root);}
+    void Inorder(Node *p);
+    void Postorder(){Postorder(root);}
+    void Postorder(Node *p);
+    void Levelorder(){Levelorder(root);}
+    void Levelorder(Node *p);
+    int Height(){return Height(root);}
+    int Height(Node *root);
+};
+
+void Tree::CreateTree() 
+{
+    Node *p,*t;
+    int x;
+    
+    Queue q(100);
+    
+    cout<<"Enter root value ";
+    cin>>x;
+    root=new Node;
+    root->data=x;
+    root->lchild=root->rchild=NULL;
+    q.enqueue(root);
+    
+    while(!q.isEmpty())
+    {
+        p=q.dequeue();
+        cout<<"Enter left child of "<<p->data<<" ";
+        cin>>x;
+        if(x!=-1)
+        {
+            t=new Node;
+            t->data=x;
+            t->lchild=t->rchild=NULL;
+            p->lchild=t;
+            q.enqueue(t);
+        }
+        cout<<"Enter right chil of "<<p->data<<" ";
+        cin>>x;
+        if(x!=-1)
+        {
+            t=new Node;
+            t->data=x;
+            t->lchild=t->rchild=NULL;
+            p->rchild=t;
+            q.enqueue(t);
+        }
+    }
+}
+
+void Tree::Preorder(Node *p)
+{
+    if(p)
+    {
+        cout<<p->data<<" ";
+        Preorder(p->lchild);
+        Preorder(p->rchild);
+    }
+}
+
+void Tree::Inorder(Node *p)
+{
+    if(p)
+    {
+        Inorder(p->lchild);
+        cout<<p->data<<" ";
+        Inorder(p->rchild);
+    }
+}
+
+void Tree::Postorder(Node *p)
+{
+    if(p)
+    {
+        Postorder(p->lchild);
+        Postorder(p->rchild);
+        cout<<p->data<<" ";
+    }
+}
+
+void Tree::Levelorder(Node *root)
+{
+    Queue q(100);
+    
+    cout<<root->data;
+    q.enqueue(root);
+    
+    while(!q.isEmpty())
+    {
+        root=q.dequeue();
+        if(root->lchild)
+        {
+            cout<<root->lchild->data;
+            q.enqueue(root->lchild);
+        }
+        if(root->rchild)
+        {
+            cout<<root->rchild->data;
+            q.enqueue(root->rchild);
+        }
+    }
+}
+
+int Tree::Height(Node *p)
+{
+    int x=0,y=0;
+    if(root==0) return 0;
+    x=Height(p->lchild);
+    y=Height(p->rchild);
+    if(x>y) return x+1;
+    else return y+1;
+}
+
+int main()
+{
+    Tree t;
+    t.CreateTree();
+    cout<<endl;
+    t.Preorder();
+    cout<<endl;
+    t.Inorder();
+    return 0;
+}
+
+#include <iostream>
+#include <queue>
+#include <stack>
+
+using namespace std;
+ 
+class Node{
+public:
+    Node* lchild;
+    int data;
+    Node* rchild;
+    Node() {};
+    Node(int data);
+};
+ 
+Node::Node(int data) {
+    lchild = nullptr;
+    this->data = data;
+    rchild = nullptr;
+}
+ 
+class Tree{
+private:
+    Node* root;
+public:
+    Tree();
+    ~Tree();
+    void CreateTree();
+    void Preorder(Node* p);
+    void Preorder() { Preorder(root); }  // Passing Private Parameter in Constructor
+    void Inorder(Node* p);
+    void Inorder() { Inorder(root); }
+    void Postorder(Node* p);
+    void Postorder() { Postorder(root); }
+    void Levelorder(Node* p);
+    void Levelorder() { Levelorder(root); }
+    void iterativePreorder(Node* p);
+    void iterativePreorder() { iterativePreorder(root); }
+    void iterativeInorder(Node* p);
+    void iterativeIvoinorder() { iterativeInorder(root); }
+    void iterativePostorder(Node* p);
+    void iterativePostorder() { iterativePostorder(root); }
+    Node* generateFromTraversal(int inorder[], int preorder[], int start, int end);
+    int Height(Node* p);
+
+    int Count(Node* p);
+  
+    int Sum(Node* p);
+  
+    int deg2NodeCount(Node* p);
+
+    int leafNodeCount(Node* p);
+    int deg1ordeg2NodeCount(Node* p);
+    int deg1NodeCount(Node* p);
+    void DestroyTree(Node* p);
+};
+
+ 
+Tree::Tree() {
+    root = nullptr;
+}
+ 
+Tree::~Tree() {
+    DestroyTree(root);
+}
+ 
+void Tree::CreateTree()
+{
+    Node* p;
+    Node* t;
+    int x;
+    queue<Node*> q;
+ 
+    root = new Node;
+    cout << "Enter root data: " << flush;
+    cin >> x;
+    root->data = x;
+    root->lchild = nullptr;
+    root->rchild = nullptr;
+    q.emplace(root);
+ 
+    while (! q.empty())
+   {
+        p = q.front();
+        q.pop();
+ 
+        cout << "Enter left child data of " << p->data << ": " << flush;
+        cin >> x;
+        if (x != -1)
+        {
+            t = new Node;
+            t->data = x;
+            t->lchild = nullptr;
+            t->rchild = nullptr;
+            p->lchild = t;
+            q.emplace(t);
+        }
+ 
+        cout << "Enter right child data of " << p->data << ": " << flush;
+        cin >> x;
+        if (x != -1)
+        {
+            t = new Node;
+            t->data = x;
+            t->lchild = nullptr;
+            t->rchild = nullptr;
+            p->rchild = t;
+            q.emplace(t);
+        }
+    }
+}
+ 
+void Tree::Preorder(Node *p) {
+    if (p){
+        cout << p->data << ", " << flush;
+        Preorder(p->lchild);
+        Preorder(p->rchild);
+    }
+}
+ 
+void Tree::Inorder(Node *p) {
+    if (p){
+        Inorder(p->lchild);
+        cout << p->data << ", " << flush;
+        Inorder(p->rchild);
+    }
+}
+ 
+void Tree::Postorder(Node *p) {
+    if (p){
+        Postorder(p->lchild);
+        Postorder(p->rchild);
+        cout << p->data << ", " << flush;
+    }
+}
+ 
+void Tree::Levelorder(Node *p) 
+{
+    queue<Node*> q;
+    cout << p->data << ", ";
+    q.emplace(p);
+ 
+    while (! q.empty())
+   {
+        p = q.front();
+        q.pop();
+ 
+        if (p->lchild){
+            cout << p->lchild->data << ", ";
+            q.emplace(p->lchild);
+        }
+ 
+        if (p->rchild){
+            cout << p->rchild->data << ", ";
+            q.emplace(p->rchild);
+        }
+    }
+}
+ 
+void Tree::iterativePreorder(Node *p) {   //o(n)
+    stack<Node*> stk;
+    while (p || ! stk.empty())
+    {
+        if (p)
+        {
+            cout << p->data << ", ";
+            stk.emplace(p);
+            p = p->lchild;
+        } else 
+        {
+            p = stk.top();
+            stk.pop();
+            p = p->rchild;
+        }
+    }
+    cout << endl;
+}
+ 
+void Tree::iterativeInorder(Node *p) {  //o(n)
+    stack<Node*> stk;
+    while(p || ! stk.empty())
+   {
+        if (p)
+        {
+            stk.emplace(p);
+            p = p->lchild;
+        } 
+        else 
+        {
+            p = stk.top();
+            stk.pop();
+            cout << p->data << ", ";
+            p = p->rchild;
+        }
+    }
+    cout << endl;
+}
+ 
+void Tree::iterativePostorder(Node *p) {
+    stack<long int> stk;
+    long int temp;
+    while (p || ! stk.empty())
+   {
+        if (p)
+        {
+            stk.emplace((long int)p);
+            p = p->lchild;
+        } else 
+        {
+            temp = stk.top();
+            stk.pop();
+            if (temp > 0)
+            {
+                stk.emplace(-temp);
+                p = ((Node*)temp)->rchild;
+            } else 
+            {
+                cout << ((Node*)(-1 * temp))->data << ", ";
+                p = nullptr;
+            }
+        }
+    }
+    cout << endl;
+}
+
+int searchInorder(int inorder[],int start,int end, int data)
+{
+    for(int i=start;i<=end;i++)
+    {
+        if(inorder[i]==data)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Node* Tree::generateFromTraversal(int inorder[],int preorder[],int start,int end)  //o(n^2)
+{
+    static int index=0;
+    if (start > end){
+        return nullptr;
+    }
+ 
+    int curr = preorder[index];
+    index++;
+    Node* node = new Node(curr);
+ 
+    if (start == end){
+        return node;
+    }
+ 
+    int pos = searchInorder(inorder, start, end, node->data);
+    node->lchild = generateFromTraversal(inorder, preorder, start, pos-1);
+    node->rchild = generateFromTraversal(inorder, preorder, pos+1, end);
+    return node;
+}
+
+int Tree::Height(Node *p) {       //o(n)
+    int l = 0;
+    int r = 0;
+ 
+    if (p)
+   {
+        l = Height(p->lchild);
+        r = Height(p->rchild);
+        if (l > r)
+        {
+            return l + 1;
+        } else  
+        {
+            return r + 1;
+        }
+    }
+    return 0;
+}
+ 
+int Tree::Count(Node *p) {
+    int x;
+    int y;
+    if (p)
+    {
+        x = Count(p->lchild);
+        y = Count(p->rchild);
+        return x + y + 1;
+    }
+    return 0;
+}
+ 
+int Tree::Sum(Node *p) {
+    int x;
+    int y;
+    if (p)
+    {
+        x = Sum(p->lchild);
+        y = Sum(p->rchild);
+        return x + y + p->data;
+    }
+    return 0;
+}
+ 
+int Tree::deg2NodeCount(Node *p) {
+    int x;
+    int y;
+    if (p)
+   {
+        x = deg2NodeCount(p->lchild);
+        y = deg2NodeCount(p->rchild);
+        if (p->lchild && p->rchild)
+        {
+            return x + y + 1;
+        } else {
+            return x + y;
+        }
+    }
+    return 0;
+}
+ 
+int Tree::leafNodeCount(Node *p) {
+    int x;
+    int y;
+    if (p)
+    {
+        x = leafNodeCount(p->lchild);
+        y = leafNodeCount(p->rchild);
+        if (p->lchild == nullptr && p->rchild == nullptr){
+            return x + y + 1;
+        } else {
+            return x + y;
+        }
+    }
+    return 0;
+}
+ 
+int Tree::deg1ordeg2NodeCount(Node *p) {  //all internal nodes
+    int x;
+    int y;
+    if (p)
+   {
+        x = deg1ordeg2NodeCount(p->lchild);
+        y = deg1ordeg2NodeCount(p->rchild);
+        if (p->lchild || p->rchild){
+            return x + y + 1;
+        } else {
+            return x + y;
+        }
+    }
+    return 0;
+}
+ 
+int Tree::deg1NodeCount(Node *p) {
+    int x;
+    int y;
+    if (p){
+        x = deg1NodeCount(p->lchild);
+        y = deg1NodeCount(p->rchild);
+        if (p->lchild != nullptr ^ p->rchild != nullptr){
+            return x + y + 1;
+        } else {
+            return x + y;
+        }
+    }
+    return 0;
+}
+ 
+void Tree::DestroyTree(Node *p) {
+    if (p){
+        DestroyTree(p->lchild);
+        DestroyTree(p->rchild);
+        delete p;
+    }
+}
+
+/*int main() {
+ 
+    Tree bt;
+ 
+    bt.CreateTree();
+    cout << endl;
+ 
+    cout << "Preorder: " << flush;
+    bt.Preorder();
+    cout << endl;
+ 
+    cout << "Inorder: " << flush;
+    bt.Inorder();
+    cout << endl;
+ 
+    cout << "Postorder: " << flush;
+    bt.Postorder();
+    cout << endl;
+ 
+    cout << "Levelorder: " << flush;
+    bt.Levelorder();
+    cout << endl;
+ 
+    return 0;
+}
+/* 
+ 
+int main() {
+ 
+    Tree bt;
+ 
+    int preorder[] = {8, 3, 12, 4, 9, 7, 5, 10, 6, 2};
+    int inorder[] = {12, 9, 4, 7, 3, 8, 10, 5, 2, 6};
+ 
+    int size = sizeof(inorder)/sizeof(inorder[0]);
+ 
+    Node* T = bt.generateFromTraversal(inorder, preorder, 0, size-1);
+ 
+    cout << "Preorder: ";
+    bt.Preorder(T);
+    cout << endl;
+ 
+    cout << "Inorder: ";
+    bt.Inorder(T);
+    cout << endl;
+ 
+    cout << "Height: " << bt.Height(T) << endl;
+    cout << "Count: " << bt.Count(T) << endl;
+    cout << "Sum: " << bt.Sum(T) << endl;
+    cout << "# of degree 2 nodes: " << bt.deg2NodeCount(T) << endl;
+    cout << "# of leaf nodes: " << bt.leafNodeCount(T) << endl;
+    cout << "# of degree 1 or degree 2 nodes: " << bt.deg1ordeg2NodeCount(T) << endl;
+    cout << "# of degree 1 nodes: " << bt.deg1NodeCount(T) << endl;
+ 
+    bt.DestroyTree(T);
+ 
+    return 0;
+}
