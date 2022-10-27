@@ -1,0 +1,763 @@
+Array 
+Data
+1.Array space
+2.Size
+3.Length
+
+Opertion
+1.Display()
+2.Add(x)/Append(x)
+3.Insert(index,x)
+4.Delete(index)
+5.Search(x)
+6.Get(index)
+7.Set(index,x)
+8.Max()
+9.Reverse()
+10.Shift()/Rotate()
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Array     
+{
+    int *A;
+    int size;
+    int length;
+};
+
+void Display(struct Array arr) 
+{
+    printf("elements are\n");
+    for(int i=0;i<arr.length;i++)
+    printf("%d ",arr.A[i]);
+}
+int main()
+{
+    struct Array arr;
+    int n;
+    printf("Enter size of array\n");
+    scanf("%d",&arr.size);
+    
+    arr.A=(int *)malloc(arr.size*sizeof(int));
+    arr.length=0;
+    
+    printf("Enter length\n");
+    scanf("%d",&n);
+    
+    printf("Enter all elements\n");
+    for(int i=0;i<n;i++)
+    scanf("%d",&arr.A[i]);
+    arr.length=n;
+    Display(arr);
+    
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Array     
+{
+    int A[10];
+    int size;
+    int length;
+};
+
+void Display(struct Array arr) 
+{
+    printf("elements are\n");
+    for(int i=0;i<arr.length;i++)
+    printf("%d ",arr.A[i]);
+    printf("\n");
+}
+
+void Append(struct Array *arr,int x) //o(1)
+{
+    if(arr->length<arr->size)
+    {
+        arr->A[arr->length]=x;
+        arr->length++;
+    }
+}
+
+void Insert(struct Array *arr,int index,int x) // o(1)-o(n)
+{
+    if(index>=0 && index<=arr->length)
+    {
+        for(int i=arr->length;i>index;i--)
+        {
+            arr->A[i]=arr->A[i-1];
+        }
+        arr->A[index]=x;
+        arr->length++;   
+    }
+}
+
+int Delete(struct Array *arr,int index) //o(1)-0(n)
+{
+    int x=0;
+    
+    if(index>=0 && index<arr->length)
+    {
+        x=arr->A[index];
+        for(int i=index;i<arr->length-1;i++)
+        {
+            arr->A[i]=arr->A[i+1];
+        }
+        arr->length--;
+        return x;
+    }
+    return 0;
+}
+
+void swap(int *x,int *y)
+{
+    int temp;
+    temp=*x;
+    *x=*y;
+    *y=temp;
+}
+
+int LSearch(struct Array *arr,int key) //o(1) - o(n)
+{ 
+    for(int i=0;i<arr->length;i++)
+    {
+        if(key==arr->A[i])
+        {
+            swap(&arr->A[i],&arr->A[i-1]);   //swap(&arr->A[i],&arr->A[0]); Move to front
+            return i;
+        }
+    }
+    return -1;
+}
+
+int BSearch(struct Array arr,int key) //o(1)-o(logn)
+{
+    int l,mid,h;
+    l=0;
+    h=arr.length-1;
+    
+    while(l<=h)
+    {
+        mid=(l+h)/2;
+        if(key==arr.A[mid])
+        return mid;
+        else if(key<arr.A[mid])
+        h=mid-1;
+        else 
+        l=mid+1;
+    }
+    return -1;
+}
+
+int RBSearch(int a[],int l,int h,int key)
+{
+    int mid;
+    
+    if(l<=h)
+    {
+        mid=(l+h)/2;
+        if(key==a[mid])
+        return mid;
+        else if(key<a[mid])
+        return RBSearch(a,l,mid-1,key);
+        else
+        return RBSearch(a,mid+1,h,key);
+    }
+    return -1;
+}
+
+int Get(struct Array arr,int index)
+{
+    if(index>=0 && index<arr.length)
+    return arr.A[index];
+    return -1;
+}
+
+void Set(struct Array *arr,int index,int x)
+{
+    if(index>=0 && index<arr->length)
+    arr->A[index]=x;
+}
+
+int Max(struct Array arr)
+{
+    int m=arr.A[0];
+    for(int i=0;i<arr.length;i++)
+    {
+        if(arr.A[i]>m)
+        {
+            m=arr.A[i];
+        }
+    }
+    return m;
+}
+
+int Min(struct Array arr)
+{
+    int m=arr.A[0];
+    for(int i=0;i<arr.length;i++)
+    {
+        if(arr.A[i]<m)
+        {
+            m=arr.A[i];
+        }
+    }
+    return m;
+}
+
+int Sum(struct Array arr)
+{
+    int s=0;
+    for(int i=0;i<arr.length;i++)
+    {
+        s=s+arr.A[i];
+    }
+    return s;
+}
+
+float Average(struct Array arr)
+{
+    return (float)Sum(arr)/arr.length;
+}
+
+void Reverse(struct Array *arr) //o(n^2)
+{
+    int *B;
+    int i,j;
+    B=(int *)malloc(arr->length*sizeof(int));
+    for(i=arr->length-1,j=0;i>=0;i--,j++)
+    {
+        B[j]=arr->A[i]; //reverse copy
+    }
+    for(int i=0;i<arr->length;i++)
+    {
+        arr->A[i]=B[i]; //copy
+    }
+}
+
+void Reverse2(struct Array *arr) //o(n)
+{
+    int i,j;
+    for(i=0,j=arr->length-1;i<j;i++,j--)  
+    {
+        swap(&arr->A[i],&arr->A[j]);
+    }
+}
+
+void SortedInsert(struct Array *arr,int x)
+{
+    int i=arr->length-1;
+    if(arr->length==arr->size)
+    return;
+    while(i>=0 && arr->A[i]>x)
+    {
+        arr->A[i+1]=arr->A[i];
+        i--;
+    }
+    arr->A[i+1]=x;
+    arr->length++;
+}
+
+int isSorted(struct Array arr) //o(1)-o(n)
+{
+    for(int i=0;i<arr.length-1;i++)
+    {
+        if(arr.A[i]>arr.A[i+1])
+        return 0;
+    }
+    return 1;
+}
+
+void Rearrange(struct Array *arr)
+{
+    int i=0,j=arr->length-1;
+    
+    while(i<j)
+    {
+        while(arr->A[i]<0)i++;
+        while(arr->A[j]>=0)j--;
+        if(i<j) swap(&arr->A[i],&arr->A[j]);
+    }
+}
+
+struct Array * Merge(struct Array *arr1,struct Array *arr2)
+{
+    int i=0,j=0,k=0;
+    struct Array *arr3=(struct Array *)malloc(sizeof(struct Array));
+    
+    while(i<arr1->length && j<arr2->length)
+    {
+        if(arr1->A[i]<arr2->A[j])
+            arr3->A[k++]=arr1->A[i++];
+        else
+            arr3->A[k++]=arr2->A[j++];
+    }
+    for(;i<arr1->length;i++)
+    arr3->A[k++]=arr1->A[i];
+    for(;j<arr2->length;j++)
+    arr3->A[k++]=arr2->A[j];
+    
+    arr3->length=arr1->length+arr2->length;
+    arr3->size=10;
+    return arr3;
+}
+
+struct Array * Union(struct Array *arr1,struct Array *arr2)
+{
+    int i=0,j=0,k=0;
+    
+    struct Array *arr3=(struct Array *)malloc(sizeof(struct Array));
+    
+    while(i<arr1->length && j<arr2->length)
+    {
+        if(arr1->A[i]<arr2->A[j])
+        arr3->A[k++]=arr1->A[i++];
+        else if(arr2->A[j]<arr1->A[i])
+        arr3->A[k++]=arr2->A[j++];
+        else
+        {
+            arr3->A[k++]=arr1->A[i++];
+            j++;   
+        }
+    }
+    for(;i<arr1->length;i++)
+    arr3->A[k++]=arr1->A[i];
+    for(;j<arr2->length;j++)
+    arr3->A[k++]=arr2->A[j];
+    
+    arr3->length=k;
+    arr3->size=10;
+    
+    return arr3;
+}
+
+struct Array * Intersection(struct Array *arr1,struct Array *arr2)
+{
+    int i=0,j=0,k=0;
+    
+    struct Array *arr3=(struct Array *)malloc(sizeof(struct Array));
+    
+    while(i<arr1->length && j<arr2->length)
+    {
+        if(arr1->A[i]<arr2->A[j])
+        i++;
+        else if(arr2->A[j]<arr1->A[i])
+        j++;
+        else if(arr1->A[i]==arr2->A[j])
+        {
+            arr3->A[k++]=arr1->A[i++];
+            j++;
+        }
+    }
+    arr3->length=k;
+    arr3->size=10;
+    return arr3;
+}
+
+struct Array * Difference(struct Array *arr1,struct Array *arr2)
+{
+    int i=0,j=0,k=0;
+    
+    struct Array *arr3=(struct Array *)malloc(sizeof(struct Array));
+    
+    while(i<arr1->length && j<arr2->length)
+    {
+        if(arr1->A[i]<arr2->A[j])
+        arr3->A[k++]=arr1->A[i++];
+        else if(arr2->A[j]<arr1->A[i])
+        j++;
+        else
+        {
+            i++;j++;
+        }
+    }
+    for(;i<arr1->length;i++)
+    arr3->A[k++]=arr1->A[i];
+    
+    arr3->length=k;
+    arr3->size=10;
+    return arr3;
+}
+
+int main()
+{
+  /*struct Array arr1={{2,4,6,8,10},10,5};
+    struct Array arr2={{3,5,9,8,15},10,5};
+    struct Array *arr3;
+    arr3=Merge(&arr1,&arr2);
+    arr3=Union(&arr1,&arr2);
+    arr3=Difference(&arr1,&arr2);
+    Display(*arr3);
+      
+    Append(&arr,10);Display(arr);
+    Insert(&arr,4,15);Display(arr);
+    printf("Deleted element:%d\n",Delete(&arr,4));Display(arr);
+    printf("Index:%d\n",LSearch(&arr,5));Display(arr);
+    printf("Index: %d\n",BSearch(arr,5));
+    printf("Index: %d\n",RBSearch(arr.A,0,arr.length,6));
+    printf("Get: %d\n",Get(arr,0));
+    Set(&arr,0,1);Display(arr);
+    printf("Max: %d\n",Max(arr));
+    printf("Min: %d\n",Min(arr));
+    printf("Sum: %d\n",Sum(arr));
+    printf("Average: %f\n",Average(arr));
+    Reverse(&arr);Display(arr);
+    Reverse2(&arr);Display(arr);
+    SortedInsert(&arr,8);Display(arr);
+    printf("%d\n",isSorted(arr));
+    Rearrange(&arr);Display(arr);*/
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+template<class T>
+class Array 
+{
+    private:
+    T *A;
+    int size;
+    int length;
+    
+    public:
+    Array()
+    {
+        size=10;
+        length=0;
+        A=new T[size];
+    }
+    Array(int sz)
+    {
+        size=sz;
+        length=0;
+        A=new T[size];
+    }
+    ~Array()
+    {
+        delete []A;
+    }
+    void Display();
+    void Insert(int index,T x);
+    T Delete(int index);
+    int Search(int key);
+};
+
+template<class T>
+void Array<T>::Display()
+{
+    cout<<"Elements are:"<<endl;
+    for(int i=0;i<length;i++)
+    cout<<A[i]<<" ";
+    cout<<endl;
+}
+
+template<class T>
+void Array<T>::Insert(int index,T x)
+{
+    if(index>=0 && index<length);
+    {
+        for(int i=length;i>index;i--)
+        A[i]=A[i-1];
+        A[index]=x;
+        length++;
+    }
+}
+
+template<class T>
+T Array<T>::Delete(int index)
+{
+    T x=0;
+    if(index>=0 && index<length)
+    {
+        x=A[index];
+        for(int i=index;i<length-1;i++)
+        {
+            A[i]=A[i+1];
+        }
+        length--;
+        return x;
+    }
+    return 0;
+}
+
+int main()
+{
+    Array<char> arr(10);
+    arr.Insert(0,'a');
+    arr.Insert(1,'c');
+    arr.Insert(2,'d');
+    arr.Display();
+    cout<<arr.Delete(0)<<endl;
+    arr.Display();
+    
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={1,2,3,4,5,6,8,9,10,11,12};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int sum=0,s=0;
+    for(int i=0;i<n;i++)
+    {
+        sum=sum+arr[i];
+    }
+    s=12*(12+1)/2;
+    printf("Missing element %d",s-sum);
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={6,7,8,9,10,11,13,14,15,16,17};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int l=6,h=17;
+    int diff=l-0;
+    for(int i=0;i<n;i++)
+    {
+        if(arr[i]-i!=diff)
+        {
+            printf("Missing element %d",i+diff);
+            break;
+        }
+    }
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={6,7,8,9,11,12,15,16,17,18,19};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int l=6,h=19;
+    int diff=l-0;
+    for(int i=0;i<n;i++)
+    {
+        if(arr[i]-i!=diff)
+        {
+            while(diff<arr[i]-i)
+            {
+                printf("Missing element %d\n",i+diff);
+                diff++;
+            }
+        }
+    }
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={3,7,4,9,12,6,1,11,2,10};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int l=1,h=12;
+    int H[12]={0};
+    for(int i=0;i<n;i++)
+    {
+        H[arr[i]]++;
+    }
+    for(int i=l;i<=h;i++)
+    {
+        if(H[i]==0)
+        printf("Missing element %d\n",i);
+    }
+    return 0;
+}
+																																																	
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={3,6,8,8,10,12,15,15,15,20};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int lastDuplicate=0;
+    for(int i=0;i<n;i++)
+    {
+        if(arr[i]==arr[i+1] && arr[i]!=lastDuplicate)
+        {
+            printf("%d\n",arr[i]);
+            lastDuplicate=arr[i];
+        }
+    }
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={3,6,8,8,10,12,15,15,15,20};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int j;
+    for(int i=0;i<n-1;i++)
+    {
+        if(arr[i]==arr[i+1])
+        {
+            j=i+1;
+            while(arr[i]==arr[j]) j++;
+            printf("%d is appearing %d times\n",arr[i],j-i);
+            i=j-1;
+        }
+    }
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={3,6,8,8,10,12,15,15,15,20};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    int H[20]={0};
+    for(int i=0;i<n;i++)
+    {
+        H[arr[i]]++;
+    }
+    for(int i=0;i<20;i++)
+    {
+        if(H[i]>1)
+        printf("%d is appearing %d times\n",i,H[i]);
+    }
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={8,3,6,4,6,5,6,8,2,7};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    int count;
+    for(int i=0;i<n-1;i++)
+    {
+        count=1;
+        
+        if(arr[i]!=-1)
+        {
+            for(int j=i+1;j<n;j++)
+            {
+                if(arr[i]==arr[j])
+                {
+                    count++;
+                    arr[j]=-1;
+                }
+            }
+            if(count>1)
+            printf("%d %d times\n",arr[i],count);
+        }
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={8,3,6,4,6,5,6,2,7,2};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    int H[8]={0};
+    for(int i=0;i<n;i++)
+    {
+        H[arr[i]]++;
+    }
+    for(int i=0;i<8;i++)
+    {
+        if(H[i]>1)
+        printf("%d %d times\n",i,H[i]);
+    }
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={6,3,8,10,16,7,5,2,9,14};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    for(int i=0;i<n-1;i++)
+    {
+        for(int j=i+1;j<n;j++)
+        {
+            if(arr[i]+arr[j]==10)
+            printf("%d + %d = 10\n",arr[i],arr[j]);
+        }
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={6,3,8,10,7,5,2,9};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int H[16]={0};
+    
+    for(int i=0;i<n;i++)
+    {
+        if(H[10-arr[i]]!=0)
+        {
+            printf("%d + %d = 10\n",arr[i],10-arr[i]);
+        }
+        H[arr[i]]++;
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={1,3,4,5,6,8,9,10,12,14};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int i=0,j=n-1;
+    while(i<j)
+    {
+        if(arr[i]+arr[j]==10)
+        {
+            printf("%d + %d = 10\n",arr[i],arr[j]);
+            i++;j++;
+        }
+        else if(arr[i]+arr[j]<10)
+        i++;
+        else//greater 
+        j--;
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+
+int main()
+{
+    int arr[]={5,8,3,9,6,2,10,7,-1,4};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    int min=arr[0],max=arr[0];
+    
+    for(int i=1;i<n;i++)
+    {
+        if(arr[i]<min)
+        min=arr[i];
+        else if(arr[i]>max)
+        max=arr[i];
+    }
+    printf("max %d min %d",max,min);
+    return 0;
+}
