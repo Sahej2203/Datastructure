@@ -1,0 +1,789 @@
+Criteria for Sorting
+1.Number of comparisons
+2.Number of swaps
+3.Adaptive(already in sorted order take less time)
+4.Stable
+Names A B C D E F G
+No.s  5 8 6 4 6 7 10
+
+order should be preserved
+Names D A C E F B G   (Stable)
+Nos.s 4 5 6 6 7 8 10
+
+5.Extra memory
+
+Comparison Based Sorts
+1.Bubble                       -
+2.Insertion                     | o(n^2)
+3.Selection                    - 
+4.Heap Sort                    -
+5.Merge Sort                    |
+6.Quick Sort                    | o(nlogn)
+7.Tree Sort                    -
+8.Shell Sort                      o(n^3/2)
+
+Index Based Sorts
+9.Count sort                   -
+10.Bucket/Bin Sort              | o(n)
+11.Radix Sort                  -
+
+Bubble Sort
+The heaviest element goes down and settle down in bottom.
+
+8,5,7,3,2
+
+I pass                      II pass             III pass    IV pass
+8   5   5   5   5           5   5   5           5  3  3     3   2
+5   8   7   7   7           7   3   3           3  5  2     2   3
+7   7   8   3   3           3   7   2           2  2  5     5   5
+3   3   3   8   2           2   2   7 - sorted  7  7  7     7   7
+2   2   2   2   8 - sorted  8   8   8 - sorted  8  8  8     6   8
+
+Number of passes - n-1
+Number of comparison - o(n^2)
+Number of swaps - o(n^2)
+Bubble Sort is adaptive,stable.
+Min time - o(n) List is sorted //adaptive by nature it is not adaptive we can make it adaptive by introducing flag variable
+Max Time - o(n^2)
+
+#include <stdio.h>
+
+void swap(int *x,int *y)
+{
+    int temp=*x;
+    *x=*y;
+    *y=temp;
+}
+
+void BubbleSort(int A[],int n)
+{
+    int flag;//adaptive
+    for(int i=0;i<n-1;i++)
+    {
+        flag=0;
+        for(int j=0;j<n-1-i;j++)
+        {
+            if(A[j]>A[j+1])
+            {
+                flag=1;
+                swap(&A[j],&A[j+1]);
+            }
+        }
+        if(flag==0)
+        break;
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2},n=10;
+
+    BubbleSort(A,10);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}
+
+Insertion Sort - Go on shifting larger elements
+2 6 10 15 20 25 30 
+0 1  2  3  4  5  6  7
+element = 12
+
+2 6 10 12 15 20 25 30
+
+min - 0(1)
+max - o(n)
+
+          q   p
+2->6->10->15->20
+element = 18
+              t
+2->6->10->15->18->20
+
+min - o(1)
+max - o(n)
+
+I pass
+8 | 5 7 3 2
+
+5 8 | 7 3 2
+
+II pass
+5 7 8 | 3 2
+
+III pass
+3 5 7 8 | 2
+
+IV pass
+2 3 5 7 8 |
+
+Number of passes - n-1
+Number of comparison - o(n^2)
+Number of swaps - o(n^2)
+Intermediate passes will not get useful result.
+Insertion sort is designed for linked list(no shifting).
+
+min time //adaptive 
+comp - o(n)
+swap - o(1)
+
+max time
+comp - o(n^2)
+swap - o(n^2)
+
+Insertion sort is adaptive and stable.
+
+#include <stdio.h>
+
+void InsertionSort(int A[],int n)
+{
+    int j,x;
+    for(int i=1;i<n;i++)
+    {
+        j=i-1;
+        x=A[i];
+        while(j>-1 && A[j]>x)
+        {
+            A[j+1]=A[j];
+            j--;
+        }
+        A[j+1]=x;
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2},n=10;
+
+    InsertionSort(A,10);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}
+
+Compare Bubble sort and Insertion Sort
+            Bubble Sort   Insertion Sort
+min comp       o(n)          o(n)                ascending
+max comp       o(n^2)        o(n^2)              descending
+min swap       o(1)          o(1)                ascending
+max swap       o(n^2)        o(n^2)              descending
+adaptive       yes           yes
+stable         yes           yes
+Linkedlist     no            yes
+k-passes       yes           no
+
+Selection Sort
+8 6 3 2 5 4
+
+select a position find the element. It is good for less number of swap.
+Intermediate result are useful.
+
+I pass  II pass  III pass  IV pass  V pass   
+8 i       2        2        2         2       2
+6         6 i      3        3         3       3
+3         3 k      6 i      4         4       4
+2 k       8        8        8 i       5       5
+5         5        5        5 k       8 i     6
+4         4        4 k      6         6 k     8
+  j         j        j        j         j
+
+No. of comp = o(n^2)
+No. of swap = o(n)
+
+Selection sort is not adaptive,stable.
+
+#include <stdio.h>
+
+void swap(int *x,int *y)
+{
+    int temp=*x;
+    *x=*y;
+    *y=temp;
+}
+
+void SelectionSort(int A[],int n)
+{
+    int i,j,k;
+    for(i=0;i<n-1;i++)
+    {
+        for(j=k=i;j<n;j++)
+        {
+            if(A[j]<A[k])
+            k=j;
+        }
+        swap(&A[i],&A[k]);
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2},n=10;
+
+    SelectionSort(A,n);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}
+
+Quick Sort (pivot element) It is recursive.
+
+Selecting an element and finding its position. 
+It is also called as Selection Exchange Sort,Partition Exchange Sort.
+All element before is smaller and all element after is greater.(Student quickly form line by themself)
+1 3 2 7 4 9 8 =>1 is sorted position
+8 7 4 3 2 1 9 =>9 is sorted position
+4 3 2 5 9 7 8 =>5 is sorted position
+
+5 7 6 9 4 8 1 2 3 32767 => 5 is pivot
+i                  j
+greater         smaller or equal than pivot
+
+5 3 6 9 4 8 1 2 7 32767
+    i         j
+
+5 3 2 9 4 8 1 6 7 32767
+      i     j
+
+5 3 2 1 4 8 9 6 7 32767
+        j i
+
+(4 3 2 1) 5 (8 9 6 7 32767)
+          |
+          partitioning position
+
+Worst Case - o(n^2) if partitioning is on any end (already sorted ascending or descending order)
+Best case - n(logn) if partitioning is in middle
+Avg Case - o(nlogn)
+
+#include <stdio.h>
+
+void swap(int *x,int *y)
+{
+    int temp=*x;
+    *x=*y;
+    *y=temp;
+}
+
+int partition(int A[],int l,int h)
+{
+    int pivot=A[l];
+    int i=l,j=h;
+    
+    do 
+    {
+        do{i++;}while(A[i]<=pivot);//if it is less it will move , if it is greater it will stop
+        do{j--;}while(A[j]>pivot);//if it is small or equal it will stop
+        
+        if(i<j) swap(&A[i],&A[j]);
+    }while(i<j);
+    
+    swap(&A[l],&A[j]);
+    return j;
+}
+
+void QuickSort(int A[],int l,int h)
+{
+    int j;
+    if(l<h)
+    {
+        j=partition(A,l,h);
+        QuickSort(A,l,j);
+        QuickSort(A,j+1,h);
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2,65535};
+
+    QuickSort(A,0,10);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}
+
+Merging
+Merging two arrays - keep them in third array - o(m+n)
+Merging two list in single array
+
+#include <stdio.h>
+
+void MergeTwoArray(int A[],int B[],int m,int n)
+{
+    int i=0,j=0,k=0;
+    int C[100];
+    while(i<m && j<n)
+    {
+        if(A[i]<B[j])
+        C[k++] = A[i++];
+        else 
+        C[k++] = B[j++];
+    }
+    for(;i<m;i++)
+    C[k++]=A[i];
+    for(;j<n;j++)
+    C[k++]=B[j];
+}
+
+void Merge(int A[],int l,int mid,int h)
+{
+    int i=l,j=mid+1,k=l;
+    int B[100];
+    while(i<=mid && j<=h)
+    {
+        if(A[i]<A[j])
+        B[k++] = A[i++];
+        else 
+        B[k++] = A[j++];
+    }
+    for(;i<=mid;i++)
+    B[k++]=A[i];
+    for(;j<=h;j++)
+    B[k++]=A[j];
+    
+    for(i=l;i<=h;i++)//copying
+    A[i]=B[i];
+}
+
+void IMergeSort(int A[],int n) //n is number of elements Time - o(nlogn)
+{
+    int p,l,h,i,mid;
+    for(p=2;p<=n;p=p*2)
+    {
+        for(i=0;i+p-1<n;i=i+p)
+        {
+            l=i;
+            h=i+p-1;
+            mid=(l+h)/2;
+            Merge(A,l,mid,h);
+        }
+    }
+    if(p/2<n) // more elements are remaining
+    Merge(A,0,p/2-1,n-1);
+}
+
+void RMergeSort(int A[],int l,int h) // Time complexity - o(nlogn) In postorder merging is done recursive uses stack + extra array Space - n+logn
+{
+    if(l<h)
+    {
+        int mid=(l+h)/2;
+        RMergeSort(A,l,mid);
+        RMergeSort(A,mid+1,h);
+        Merge(A,l,mid,h);//lists are getting merged
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2,65535};
+
+    //IMergeSort(A,10);
+    RMergeSort(A,0,10);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}
+
+Count Sort - index based sorting ,take extra space
+1.Scanning   
+2.Scanning
+Time o(n)
+It need big size space that depends on maximum number
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int findMax(int A[],int n)
+{
+    int max=0;
+    for(int i=0;i<n;i++)
+    {
+        if(A[i]>max)
+        max=A[i];
+    }
+    return max;
+}
+void CountSort(int A[],int n)
+{
+    int max=findMax(A,n);
+    int *C=(int *)malloc(sizeof(int)*(max+1));
+    
+    for(int i=0;i<max+1;i++)
+        C[i]=0; //initialize
+    
+    for(int i=0;i<n;i++)//scanning
+        C[A[i]]++;
+
+    int i=0,j=0;//C -> j , A -> i
+    while(j<max+1)//copying
+    {
+        if(C[j]>0)
+        {
+            A[i++]=j;
+            C[j]--;
+        }
+        else
+            j++;
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2};
+
+    CountSort(A,10);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}           
+
+Bin/Bucket Sort
+#include <iostream>
+using namespace std;
+ 
+template <class T>
+void Print(T& vec, int n, string s){
+    cout << s << ": [";
+    for (int i=0; i<n; i++){
+        cout << vec[i];
+        if (i < n-1){
+            cout << ", ";
+        }
+    }
+    cout << "]" << endl;
+}
+ 
+int Max(int A[], int n){
+    int max = -32768;
+    for (int i=0; i<n; i++){
+        if (A[i] > max){
+            max = A[i];
+        }
+    }
+    return max;
+}
+ 
+// Linked List node
+class Node{
+public:
+    int value;
+    Node* next;
+};
+ 
+void Insert(Node** ptrBins, int idx)
+{
+    Node* temp = new Node;
+    temp->value = idx;
+    temp->next = nullptr;
+ 
+    if (ptrBins[idx] == nullptr)
+        { // ptrBins[idx] is head ptr
+            ptrBins[idx] = temp;
+        } 
+        else 
+        {
+            Node* p = ptrBins[idx];
+            while (p->next != nullptr)
+                p = p->next;
+        
+            p->next = temp;
+        }
+}
+ 
+int Delete(Node** ptrBins, int idx)
+{
+    Node* p = ptrBins[idx];  // ptrBins[idx] is head ptr
+    ptrBins[idx] = ptrBins[idx]->next;
+    int x = p->value;
+    delete p;
+    return x;
+}
+ 
+void BinSort(int A[], int n)//Time Complexity - O(n), Space - o(n)
+{
+    int max = Max(A, n);
+ 
+    // Create bins array
+    Node** bins = new Node* [max + 1];
+ 
+    // Initialize bins array with nullptr
+    for (int i=0; i<max+1; i++)
+        bins[i] = nullptr;
+ 
+    // Update count array values based on A values
+    for (int i=0; i<n; i++)
+        Insert(bins, A[i]);
+ 
+    // Update A with sorted elements
+    int i = 0,j = 0;
+    while (i < max+1)
+    {
+        while (bins[i] != nullptr)
+        {
+            A[j++] = Delete(bins, i);
+        }
+        i++;
+    }
+ 
+    // Delete heap memory
+    delete [] bins;
+}
+ 
+int main() 
+{
+ 
+    int A[] = {2, 5, 8, 12, 3, 6, 7, 10};
+    int n = sizeof(A)/sizeof(A[0]);
+ 
+    Print(A, n, "\tA");
+    BinSort(A, n);
+    Print(A, n, " Sorted A");
+    cout << endl;
+    return 0;
+}
+
+Radix Sort
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+ 
+template <class T>
+void Print(T& vec, int n, string s)
+{
+    cout << s << ": [";
+    for (int i=0; i<n; i++)
+    {
+        cout << vec[i];
+        if (i < n-1)
+        {
+            cout << ", ";
+        }
+    }
+    cout << "]" << endl;
+}
+ 
+int Max(int A[], int n)
+{
+    int max = -32768;
+    for (int i=0; i<n; i++)
+    {
+        if (A[i] > max)
+        {
+            max = A[i];
+        }
+    }
+    return max;
+}
+ 
+// Linked List node
+class Node{
+public:
+    int value;
+    Node* next;
+};
+ 
+int countDigits(int x)
+{
+    int count = 0;
+    while (x != 0)
+    {
+        x = x / 10;
+        count++;
+    }
+    return count;
+}
+ 
+void initializeBins(Node** p, int n)
+{
+    for (int i=0; i<n; i++)
+        p[i] = nullptr;
+}
+ 
+void Insert(Node** ptrBins, int value, int idx)
+{
+    Node* temp = new Node;
+    temp->value = value;
+    temp->next = nullptr;
+ 
+    if (ptrBins[idx] == nullptr)
+    {
+        ptrBins[idx] = temp;  // ptrBins[idx] is head ptr
+    } 
+    else 
+    {
+        Node* p = ptrBins[idx];
+        while (p->next != nullptr)
+            p = p->next;
+        
+        p->next = temp;
+    }
+}
+ 
+int Delete(Node** ptrBins, int idx)
+{
+    Node* p = ptrBins[idx];  // ptrBins[idx] is head ptr
+    ptrBins[idx] = ptrBins[idx]->next;
+    int x = p->value;
+    delete p;
+    return x;
+}
+ 
+int getBinIndex(int x, int idx)
+{
+    return (int)(x / pow(10, idx)) % 10;
+}
+ 
+void RadixSort(int A[], int n)
+{
+    int max = Max(A, n);
+    int nPass = countDigits(max);
+
+    // Create bins array
+    Node** bins = new Node* [10];
+ 
+    // Initialize bins array with nullptr
+    initializeBins(bins, 10);
+ 
+    // Update bins and A for nPass times
+    for (int pass=0; pass<nPass; pass++)
+    {
+ 
+        // Update bins based on A values
+        for (int i=0; i<n; i++)
+        {
+            int binIdx = getBinIndex(A[i], pass);
+            Insert(bins, A[i], binIdx);
+        }
+ 
+        // Update A with sorted elements from bin
+        int i = 0,j = 0;
+        while (i < 10)
+        {
+            while (bins[i] != nullptr)
+                A[j++] = Delete(bins, i);
+                
+            i++;
+        }
+        // Initialize bins with nullptr again
+        initializeBins(bins, 10);
+    }
+ 
+    // Delete heap memory
+    delete [] bins;
+}
+ 
+int main() 
+{
+    int A[] = {237, 146, 259, 348, 152, 163, 235, 48, 36, 62};
+    int n = sizeof(A)/sizeof(A[0]);
+ 
+    Print(A, n, "\tA");
+    RadixSort(A, n);
+    Print(A, n, " Sorted A");
+ 
+    return 0;
+}
+
+Shell Sort
+
+9  5  16  8  13  6  12  10  4  2  3
+0  1   2  3  4   5   6   7  8  9  10
+gap = 10/2
+    = 5
+
+6  5  16  8  13  9  12  10  4  2  3
+
+6  5  16  8  13  9  12  10  4  2  3
+
+6  5  10  8  13  9  12  16  4  2  3
+
+6  5  10  4  13  9  12  16  8  2  3
+
+6  5  10  4  2  9  12  16  8  13  3
+
+6  5  10  4  2  3  12  16  8  13  9  =>  3  5  10  4  2  6  12  16  8  13  9
+
+
+gap = 5/2 = 2
+
+3  5  10  4  2  6  12  16  8  13  9 
+
+3  4  10  5  2  6  12  16  8  13  9
+
+3  4  2  5  10  6  12  16  8  13  9  => 2  4  3  5  10  6  12  16  8  13  9
+
+2  4  3  5  10  6  12  16  8  13  9
+
+2  4  3  5  10  6  12  16  8  13  9
+
+2  4  3  5  10  6  8   16  12  13  9  => 2  4  3  5  8  6  10  16  12  13  9
+
+2  4  3  5  8  6  10  13  12  16  9 
+
+2  4  3  5  8  6  10  13  9  16  12 => 2  4  3  5  8  6  9  13  10  16  12
+
+gap = 2/2 = 1
+
+2  4  3  5  8  6  9  13  10  16  12 
+
+2  3  4  5  8  6  9  13  10  16  12
+
+2  3  4  5  8  6  9  13  10  16  12
+
+2  3  4  5  6  8  9  13  10  16  12
+
+2  3  4  5  6  8  9  13  10  16  12
+
+2  3  4  5  6  8  9  13  10  16  12
+
+2  3  4  5  6  8  9  10  13  16  12
+
+2  3  4  5  6  8  9  10  13  12  16  =>  2  3  4  5  6  8  9  10  12  13  16
+
+Analysis of Shell Sort
+
+nlogn
+Scanning + number of passes
+It is used for sorting very large size list.
+o(nlogn),o(n^3/2)=o(n^1.5),o(^5/3)=o(n^1.6)
+Shell sort is adaptive as it is following insertion sort is adaptive
+Shell sort does not take extra space so it is inplace.
+It comes under comparison based sorting.
+
+#include <stdio.h>
+
+void ShellSort(int A[],int n)
+{
+    for(int gap=n/2;gap>=1;gap=gap/2) //5 2 1
+    {
+        for(int i=gap;i<n;i++)//i=5
+        {
+            int temp=A[i];//temp=A[5]
+            int j=i-gap;//j=0
+            while(j>=0 && A[j]>temp)//A[0]>A[5]
+            {
+                A[j+gap]=A[j];//copy
+                j=j-gap;//check previous ones
+            }
+            A[j+gap]=temp;
+        }
+    }
+}
+
+int main()
+{
+    int A[]={3,7,9,10,6,5,12,4,11,2},n=10;
+
+    ShellSort(A,10);
+    for(int i=0;i<10;i++)
+    printf("%d ",A[i]);
+    printf("\n");
+    return 0;
+}
