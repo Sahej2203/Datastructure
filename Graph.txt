@@ -1,0 +1,420 @@
+A graph is defined as collection of vertices and edges.It is a nonlinear datastructure.
+G=(V,E)
+
+If the edge is showing direction then it is called directed graph.
+Self loop
+Prallel edges
+Indegree - coming in
+Outdegree - going out
+
+No self loop and parallel edges the graph is called simple Digraph.
+
+No direction - Nondirected graph, Graph.
+Degree - counted either way
+
+Non connected graph - divide into components. 
+Articulation point - vertices on removal will split the graph
+
+Strongly Connected Graph - From any vertices we can go all other vertices.
+Path - set of all the vertices in between 
+Cycle - Circular Path
+
+Directed Acyclic Graph - No cycle
+
+Topological Ordering - arrange linearly
+
+Representation of Undirected Graph
+1.Adjacency Matrix - o(n^2) =>Cost Adjacency Matrix
+2.Adjacency List - array of linked list - n + 2e = |V| + 2|E| => Cost Adjacency List
+3.Compact list - array - |V| + 2|E| + 1 = o(n) linear
+
+Representation of Directed Graph
+1.Adjacency Matrix - Indegree by checking column - o(n^2)
+2.Adjacency List - array of linkedList We can have inverse adjacency list for indegree - |V| + |E| = n + n = o(n)
+3.Compact List
+
+Breadth First Search 
+It is similar to level order
+
+   1---2                             1                             
+   |\  |                          2--3--4                       
+   | \ |                             | /                        
+   4---3                             5                          
+    \ /                             6 7 
+     5                      Breadth First Search Spanning Tree
+    / \                      Level order 1 2 3 4 5 6 7
+   6   7                      
+
+We can take this in any order
+
+1.Visiting a vertice
+2.Exploring a vertice
+
+Steps of Breadth First Search
+>Select starting vertice
+>Visit the vertice
+>Drop it in queue
+>Start exploring the vertice
+    >Visit the vertice
+    >Drop it in queue
+
+>Condition - Queue become empty
+
+Analytical Time - o(n)
+Implementation Time - o(n^2) //Datastructure - adjacency matrix
+
+Depth First Search
+-This is similar to preorder
+1.visited
+2.exploring (recursively)
+  >suspend and push
+
+   1---2                         1                               
+   |\  |                        /                       
+   | \ |                       2                         
+   4---3                      /                           
+    \ /                      3     
+     5                      /      
+    / \                    5                    
+   6   7                  /|\ 
+                         7 6 4
+
+                Depth First Search Spanning Tree
+Stack  1 2 3 5 7
+
+Analytical Time - o(n)
+Time depends upon datastructure
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node 
+{
+    int data;
+    struct Node *next;
+}*front=NULL,*rear=NULL;
+
+void enqueue(int x)
+{
+    struct Node *t=(struct Node *)malloc(sizeof(struct Node));
+    
+    if(t==NULL)
+    printf("Queue is full\n");
+    else 
+    {
+        t->data=x;
+        t->next=NULL;
+        if(front==NULL)
+            front=rear=t;
+        else
+        {
+            rear->next=t;
+            rear=t;
+        }
+    }
+}
+
+int dequeue()
+{
+    int x=-1;
+    struct Node *p=front;
+    if(front==NULL)
+    printf("Queue is empty");
+    else 
+    {
+        front=front->next;
+        x=p->data;
+        free(p);
+    }
+    return x;   
+}
+
+int isEmpty()
+{
+    return front==NULL;
+}
+
+void BFS(int G[][7],int start, int n)
+{
+    int i=start,j;
+ 
+    int visited[7]={0};
+    
+    printf("%d ",i);
+    visited[i]=1;
+    enqueue(i);
+    
+    while(!isEmpty())
+    {
+        i=dequeue();
+        for(j=1;j<n;j++)
+        {
+            if(G[i][j]==1 && visited[j]==0)
+            {
+                printf("%d ",j);
+                visited[j]=1;
+                enqueue(j);
+            }
+        }
+    }
+}
+
+void DFS(int G[][7], int start, int n)
+{
+    static int visited[7]={0};
+    
+    if(visited[start]==0)
+    printf("%d ",start);
+    visited[start]=1;
+    for(int j=1;j<n;j++)
+    {
+        if(G[start][j]==1 && visited[j]==0)
+        DFS(G,j,n);
+    }
+}
+
+int main()
+{//               0 1 2 3 4 5 6
+    int G[7][7]={{0,0,0,0,0,0,0},//0    Adjacency Matrix            1
+                 {0,0,1,1,0,0,0},//1                          2            3
+                 {0,1,0,0,1,0,0},//2                                
+                 {0,1,0,0,1,0,0},//3                                4
+                 {0,0,1,1,0,1,1},//4                          5            6
+                 {0,0,0,0,1,0,0},//5
+                 {0,0,0,0,1,0,0}};//6
+
+   // BFS(G,5,7);
+   DFS(G,1,7);
+    return 0;
+}
+
+Spanning Tree
+A subgraph of graph
+More tahn one spanning tree is possible, it should be connected no cycle.
+|V|=4
+|E|=6
+|E|C|V|-1 = 6C3 - cycles = 20 - 4 = 16
+
+Minimum cost spanning tree
+Prim's algorithm
+Kruskal algorithm
+
+Prim's algorithm
+Steps
+>Select minimum cost edge
+>Select minimum cost edge which is coonected
+        >Select minimum cost edge but connected 
+
+Time - (|V|-1)*E
+        o(n^2)
+
+If using heap datastructure - o(nlogn)
+
+#include <iostream>
+#define I 32767
+
+using namespace std;
+  int cost[][8]=//  0  1  2  3  4  5  6  7                       PRIM,S ALGORITHM
+                  {{I, I, I, I, I, I, I, I},   //0               Cost Adjacency matrix 8 X 8
+                  {I, I, 25, I, I, I, 5, I},   //1 
+                  {I, 25, I, 12, I, I, I, 10}, //2
+                  {I, I, 12, I, 8, I, I, I},   //3
+                  {I, I, I, 8, I, 16, I, 14},  //4
+                  {I, I, I, I, 16, I, 20, 18}, //5
+                  {I, 5, I, I, I, 20, I, I},   //6
+                  {I, I, 10, I, 14, 18, I, I}};//7 
+        
+    int near[8]={I,I,I,I,I,I,I,I};
+    int t[2][6];// 0  1  5  4  3  2  7
+                // 1  6  6  5  4  3  2
+                //    0  1  2  3  4  5
+int main() 
+{
+    int i,j,k,u,v,n=7,min=I;
+    
+    for(i=1;i<=n;i++)                                            //Initial:Find min cost edge from upper triangular matrix
+    {
+        for(j=i;j<=n;j++)
+        {
+            if(cost[i][j]<min)
+            {
+                min=cost[i][j];                                  
+                u=i;
+                v=j;
+            }
+        }
+    }
+    t[0][0]=u;t[1][0]=v;                                   
+    near[u]=near[v]=0;
+    
+    for(i=1;i<=n;i++)                                             // Connected + min cost edges,Update near array
+    {
+        if(near[i]!=0)
+        if(cost[i][u]<cost[i][v])
+            near[i]=u;
+        else
+            near[i]=v;
+    }
+    
+    for(i=1;i<n-1;i++)                                           // Repeating step, Find minimum edge ,1 edge we got 
+    {
+            min=I;
+            for(j=1;j<=n;j++)
+            {
+                if(near[j]!=0 && cost[j][near[j]]<min)
+                {
+                    k=j;
+                    min=cost[j][near[j]];
+                }
+            }
+            t[0][i]=k;t[1][i]=near[k];
+            near[k]=0;
+            
+            for(j=1;j<=n;j++)                                        //Update near array
+            {
+                if(near[j]!=0 && cost[j][k]<cost[j][near[j]])
+                near[j]=k;
+            }
+    }
+    
+    for(i=0;i<n-1;i++)
+    {
+        cout<<"("<<t[0][i]<<","<<t[1][i]<<")"<<endl;
+    }
+}
+
+Kruskal Minimum Cost Spanning Tree
+>Always select minimum cost edge from graph but make sure they are not forming a cycle, if forming a cycle go to the next edge
+>Repeat
+
+Time = (|V| - 1)|E| = o(n^2) independent of datastructure
+Take benifit of min heap to improve , time = o(nlogn)
+
+Kruskal main focus is on minimum while prim's focus is on tree
+
+In case of nonconnected graph Kruskal can find minimum spanning tree for each component individually, not for entire graph but not possible in Prim's algorithm
+
+Disjoint Subset
+It is useful for detecting cycle in a graph.So useful in Kruskal algorithm.
+
+U = {1,2,3,4,5,6,7,8,9,10}
+
+ 1  2  3  4  5  6  7  8  9  10 
+Every number is a set in itself
+
+S   -1 -1 -1 -1 -1 -1 -1 -1 -1  -1  -1 //negative number show its a set
+    0   1  2  3  4  5  6  7  8   9  10
+ 
+A = {3,5,9}    B = {4,7,8,10}
+
+A intersection B = null
+
+S      -1 -1 -3  -4  3 -1  4  4  3  4   // 5 and 9 are children of 3;  7, 8, 10 are children of 4,total number of nodes = 4 (-4)
+    0   1  2  3   4  5  6  7  8  9  10
+
+A U B = {3,4,5,7,8,9,10} //weighted union
+
+S      -1  -1  4  -7  3 -1  4  4  3  4      // 3 parent is 4
+    0   1   2  3   4  5  6  7  8  9  10
+
+void union(int u,int v)
+{
+    if(S[u]<S[v]
+    {
+        S[u]=S[u]+S[v];
+        S[v]=u;
+     }
+     else 
+    {
+        S[v]=S[u]+S[v];
+        S[u]=v;
+     }
+}
+
+collapsing find
+Parent of any node
+
+int find(int u)
+{
+    int x = u;
+    while(S[x]>0)
+    {
+        x=S[x];
+    }
+}
+
+#include <iostream>
+#define I 32767
+
+using namespace std;
+
+int edges[3][9]={{ 1, 1, 2, 2 ,3 ,4, 4, 5, 5},
+                 { 2, 6, 3, 7, 4, 5, 7, 6, 7},
+                 {25, 5,12,10, 8,16,14,20,18}};
+
+int set[8]={-1,-1,-1,-1,-1,-1,-1,-1};
+
+int included[9]={0};
+
+int t[2][6];
+
+void Myunion(int u,int v)
+{
+    if(set[u]<set[v])
+    {
+        set[u]=set[u]+set[v];
+        set[v]=u;
+    }
+    else 
+    {
+        set[v]=set[u]+set[v];
+        set[u]=v;
+    }
+}
+
+int find(int u)
+{
+    int x = u,v=0;
+    while(set[x]>0)
+    {
+        x=set[x];
+    }
+    while(u!=x)
+    {
+        v=set[u];
+        set[u]=x;
+        u=v;
+    }
+    return x;
+}
+
+int main()
+{
+    int i=0,j,k,n=7,e=9,min,u,v;
+    
+    while(i<n-1)
+   {
+       min=I;
+       for(j=0;j<e;j++)
+       {
+           if(included[j]==0 && edges[2][j]<min)
+           {
+               min=edges[2][j];
+               k=j;
+               u=edges[0][j];
+               v=edges[1][j];
+           }
+       }
+       if(find(u)!=find(v))
+       {
+           t[0][i]=u;
+           t[1][i]=v;
+           Myunion(find(u),find(v));
+           i++;
+       }
+       included[k]=1;
+   }
+   
+   for(i=0;i<n-1;i++)
+   cout<<"("<<t[0][i]<<","<<t[1][i]<<")"<<endl;
+}
